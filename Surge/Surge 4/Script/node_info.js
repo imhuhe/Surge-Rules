@@ -1,5 +1,5 @@
 // Surge Panel — 节点信息
-// 依赖：ip-api.com · api6.ipify.org · edns.ip-api.com · cp.cloudflare.com · Surge $httpAPI
+// 依赖：ip-api.com · api6.ipify.org · edns.ip-api.com · cp.cloudflare.com · Surge $httpAPI · $network
 // argument: group=Proxy（你的主策略组名）
 
 const STORE_KEY = 'surge_node_panel_v1';
@@ -46,17 +46,54 @@ const SUB = {
   IN:'亚洲›南亚', PK:'亚洲›南亚', BD:'亚洲›南亚', LK:'亚洲›南亚',
   TR:'亚洲›西亚', AE:'亚洲›西亚', SA:'亚洲›西亚', IL:'亚洲›西亚',
   KW:'亚洲›西亚', QA:'亚洲›西亚', BH:'亚洲›西亚',
-  KZ:'亚洲›中亚', UZ:'亚洲›中亚',
-  RU:'欧洲›东欧', UA:'欧洲›东欧', PL:'欧洲›东欧', RO:'欧洲›东欧', BG:'欧洲›东欧',
-  DE:'欧洲›西欧', FR:'欧洲›西欧', NL:'欧洲›西欧', BE:'欧洲›西欧', LU:'欧洲›西欧',
+  RU:'欧洲›东欧', UA:'欧洲›东欧', PL:'欧洲›东欧', RO:'欧洲›东欧',
+  DE:'欧洲›西欧', FR:'欧洲›西欧', NL:'欧洲›西欧', BE:'欧洲›西欧',
   GB:'欧洲›西欧', IE:'欧洲›西欧',
-  AT:'欧洲›中欧', CH:'欧洲›中欧', CZ:'欧洲›中欧', HU:'欧洲›中欧', SK:'欧洲›中欧',
-  ES:'欧洲›南欧', PT:'欧洲›南欧', IT:'欧洲›南欧', GR:'欧洲›南欧', HR:'欧洲›南欧',
-  SE:'欧洲›北欧', NO:'欧洲›北欧', FI:'欧洲›北欧', DK:'欧洲›北欧', IS:'欧洲›北欧',
+  AT:'欧洲›中欧', CH:'欧洲›中欧', CZ:'欧洲›中欧',
+  ES:'欧洲›南欧', PT:'欧洲›南欧', IT:'欧洲›南欧', GR:'欧洲›南欧',
+  SE:'欧洲›北欧', NO:'欧洲›北欧', FI:'欧洲›北欧', DK:'欧洲›北欧',
   US:'北美洲', CA:'北美洲', MX:'北美洲',
-  BR:'南美洲', AR:'南美洲', CL:'南美洲', CO:'南美洲', PE:'南美洲',
+  BR:'南美洲', AR:'南美洲', CL:'南美洲', CO:'南美洲',
   AU:'大洋洲', NZ:'大洋洲',
   ZA:'非洲', NG:'非洲', EG:'非洲', KE:'非洲',
+};
+
+const CARRIERS = {
+  // 中国大陆
+  '460-00':'中国移动', '460-02':'中国移动', '460-04':'中国移动', '460-07':'中国移动', '460-08':'中国移动',
+  '460-01':'中国联通', '460-06':'中国联通', '460-09':'中国联通',
+  '460-03':'中国电信', '460-05':'中国电信', '460-11':'中国电信',
+  '460-15':'中国广电', '460-20':'中移铁通',
+  // 香港
+  '454-00':'CSL', '454-02':'CSL', '454-10':'CSL',
+  '454-03':'3HK', '454-04':'3HK', '454-05':'3HK',
+  '454-09':'CMHK', '454-12':'CMHK',
+  '454-07':'UNICOM HK',
+  // 台湾
+  '466-92':'中華電信', '466-11':'中華電信',
+  '466-01':'遠傳電信', '466-97':'台灣大哥大',
+  // 日本
+  '440-10':'docomo', '440-20':'SoftBank', '440-11':'Rakuten',
+  '440-50':'au', '440-51':'au', '440-52':'au',
+  '440-00':'Y!mobile',
+  // 韩国
+  '450-05':'SKT', '450-03':'SKT',
+  '450-02':'KT', '450-04':'KT',
+  '450-06':'LG U+', '450-10':'LG U+',
+  // 新加坡
+  '525-01':'SingTel', '525-05':'StarHub', '525-03':'M1',
+  // 美国
+  '310-260':'T-Mobile', '311-490':'T-Mobile',
+  '310-410':'AT&T', '310-030':'AT&T',
+  '311-480':'Verizon', '310-004':'Verizon',
+  // 英国
+  '234-30':'EE', '234-10':'O2', '234-20':'3', '234-15':'Vodafone',
+};
+
+const RADIO_GEN = {
+  'NR':'5G', 'NRNSA':'5G', 'LTE':'4G', 'eHRPD':'3.9G',
+  'HSUPA':'3.75G', 'HSDPA':'3.5G', 'WCDMA':'3G',
+  'EDGE':'2.75G', 'GPRS':'2.5G', 'CDMA1x':'2.5G',
 };
 
 function subRegion(cc) { return (SUB[cc] || '其他地区').replace('›', ' › '); }
@@ -84,6 +121,36 @@ function fmtTZDiff(pOff, lOff) {
   return `${d > 0 ? '领先' : '落后'}本机 ${Math.abs(d)}h`;
 }
 
+// — 本机网络信息（$network）—
+function getLocalNetInfo() {
+  const ssid     = $network.wifi?.ssid;
+  const cell     = $network['cellular-data'];
+  const localV4  = $network.v4?.primaryAddress || '';
+  const localV6  = $network.v6?.primaryAddress || '';
+
+  let netLabel = '未知网络';
+  let icon     = 'network';
+  let iconColor = '#5B8AF5';
+  let localIP  = localV4 || '';
+
+  if (ssid) {
+    netLabel  = `Wi-Fi · ${ssid}`;
+    icon      = 'wifi';
+    iconColor = '#005CAF';
+  } else if (cell) {
+    const carrier = CARRIERS[cell.carrier] || '蜂窝网络';
+    const gen     = RADIO_GEN[cell.radio] || cell.radio || '';
+    const radio   = cell.radio || '';
+    netLabel  = [carrier, gen, radio].filter(Boolean).join(' · ');
+    icon      = 'simcard';
+    iconColor = '#F9BF45';
+  }
+
+  if (localV4 && localV6) localIP = `${localV4} / ${localV6.slice(0, 18)}…`;
+
+  return { netLabel, localIP, icon, iconColor };
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 ;(async () => {
@@ -91,7 +158,7 @@ function fmtTZDiff(pOff, lOff) {
   const params    = getParams($argument || '');
   const groupName = params.group || 'Proxy';
 
-  // — 遍历策略组，获取实际节点名 —
+  // — 获取实际节点名 —
   let nodeName = 'DIRECT';
   try {
     const allGroups  = await httpAPI('/v1/policy_groups');
@@ -103,7 +170,10 @@ function fmtTZDiff(pOff, lOff) {
     nodeName = cur || 'DIRECT';
   } catch(e) {}
 
-  // — 并行发出所有请求 —
+  // — 本机网络 —
+  const { netLabel, localIP, icon, iconColor } = getLocalNetInfo();
+
+  // — 并行请求 —
   const [ipRaw, v6Raw, dnsRaw, rtt1, rtt2, rtt3] = await Promise.all([
     httpGet('http://ip-api.com/json/?fields=status,country,countryCode,city,timezone,isp,org,as,asname,proxy,hosting,mobile,query', 8),
     httpGet('https://api6.ipify.org?format=json', 5),
@@ -113,20 +183,17 @@ function fmtTZDiff(pOff, lOff) {
     httpHead(LAT_URL, 5),
   ]);
 
-  // — 解析响应 —
+  // — 解析 —
   let ipInfo = null;
   try { ipInfo = JSON.parse(ipRaw); } catch(e) {}
-
   let ipv6Addr = null;
   try { ipv6Addr = JSON.parse(v6Raw)?.ip || null; } catch(e) {}
-
   let dnsInfo = null;
   try { dnsInfo = JSON.parse(dnsRaw); } catch(e) {}
-
   const rtts = [rtt1, rtt2, rtt3].filter(r => r !== null);
 
   if (!ipInfo || ipInfo.status !== 'success') {
-    $done({ title: '节点信息', content: '⚠️ IP 查询失败，请检查网络', icon: 'exclamationmark.triangle.fill', 'icon-color': '#FF6B6B' });
+    $done({ title: '节点信息', content: '⚠️ IP 查询失败，请检查网络', icon: 'wifi.exclamationmark', 'icon-color': '#CB1B45' });
     return;
   }
 
@@ -180,17 +247,10 @@ function fmtTZDiff(pOff, lOff) {
     latStr = `${avg}ms${jit > 0 ? ' ±' + jit : ''}`;
   }
 
-  // — 本机网络 —
-  const netType = ($surge.networkType || '').toUpperCase();
-  const ssid    = $surge.ssid || '';
-  const net = (netType === 'WIFI' || netType === 'WLAN')
-    ? (ssid ? `Wi-Fi · ${ssid}` : 'Wi-Fi')
-    : (netType === 'CELLULAR' || netType === 'CELL' ? '蜂窝网络' : (netType || '未知'));
-
   const v6  = ipv6Addr ? `${ipv6Addr}  ✓` : 'IPv6 不可用';
   const upd = new Date().toLocaleString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
 
-  const content = [
+  const lines = [
     `🟢 ${nodeName}`,
     `   ${groupName}`,
     ``,
@@ -207,10 +267,10 @@ function fmtTZDiff(pOff, lOff) {
     `🕐  ${utcLabel} · ${wd} ${hhmm} · ${diffLabel}`,
     ``,
     `⏱  稳定 ${stable}${chgLine}`,
-    `📶  ${latStr} · ${net}`,
-    ``,
-    `↻  ${upd}`,
-  ].join('\n');
+    `📶  ${latStr} · ${netLabel}`,
+  ];
+  if (localIP) lines.push(`     本机 ${localIP}`);
+  lines.push(``, `↻  ${upd}`);
 
-  $done({ title: '节点信息', content, icon: 'network', 'icon-color': '#5B8AF5' });
+  $done({ title: '节点信息', content: lines.join('\n'), icon, 'icon-color': iconColor });
 })();
