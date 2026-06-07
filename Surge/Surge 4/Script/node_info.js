@@ -142,7 +142,7 @@ function render() {
   // — 节点 —
   const node   = $surge.nodeName   || '—';
   const policy = $surge.policyName || '—';
-  const v6Line = ipv6Addr ? `IPv6   ${ipv6Addr}  ✓` : `IPv6   不可用`;
+  const v6     = ipv6Addr ? `${ipv6Addr}  ✓` : 'IPv6 不可用';
 
   const upd = new Date().toLocaleString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
 
@@ -150,22 +150,22 @@ function render() {
     `🟢 ${node}`,
     `   ${policy}`,
     ``,
-    `IPv4   ${ipInfo.query}${chgNote}`,
-    v6Line,
+    `🌐  ${ipInfo.query}${chgNote}`,
+    `     ${v6}`,
     ``,
     geo,
-    `     ${ipInfo.isp}`,
+    `🏢  ${ipInfo.isp}`,
     `     ${asNum} · ${asName}`,
     ``,
-    `标记   ${risk}`,
-    `DNS    ${dnsStr}`,
+    `🛡  ${risk}`,
+    `🔍  ${dnsStr}`,
     ``,
-    `${utcLabel} · ${wd} ${hhmm} · ${diffLabel}`,
+    `🕐  ${utcLabel} · ${wd} ${hhmm} · ${diffLabel}`,
     ``,
-    `IP 已稳定 ${stable}${chgLine}`,
-    `延迟 ${latStr} · ${net}`,
+    `⏱  稳定 ${stable}${chgLine}`,
+    `📶  ${latStr} · ${net}`,
     ``,
-    `更新于 ${upd}`,
+    `↻  ${upd}`,
   ].join('\n');
 
   $done({ title: '节点信息', content, icon: 'network', 'icon-color': '#5B8AF5' });

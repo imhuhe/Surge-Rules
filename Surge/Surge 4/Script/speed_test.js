@@ -55,14 +55,13 @@ function tryRender() {
   const upd = new Date().toLocaleString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
 
   const content = [
-    `下行速率`,
-    dlLine,
+    `⬇️  ${dlLine}`,
     ``,
-    `延  迟   ${latLine}    抖动 ${jitLine}`,
-    `         ${mmLine}`,
+    `⚡  延迟 ${latLine}    抖动 ${jitLine}`,
+    `     ↓最快 ${min !== null ? min + 'ms' : '—'}  ↑最慢 ${max !== null ? max + 'ms' : '—'}  (${rtts.length} 次)`,
     ``,
-    `测速节点  Cloudflare`,
-    `更新于 ${upd}`,
+    `🌐  Cloudflare`,
+    `↻  ${upd}`,
   ].join('\n');
 
   $done({
