@@ -1,12 +1,37 @@
 // Surge Panel — 节点信息
-// 依赖：ip-api.com · api6.ipify.org · edns.ip-api.com · cp.cloudflare.com
-// 建议刷新间隔：300s
+// 依赖：ip-api.com · api6.ipify.org · edns.ip-api.com · cp.cloudflare.com · Surge $httpAPI
+// argument: group=Proxy（你的主策略组名）
 
 const STORE_KEY = 'surge_node_panel_v1';
 const LAT_URL   = 'https://cp.cloudflare.com/generate_204';
-const LAT_N     = 3;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
+
+function getParams(str) {
+  if (!str) return {};
+  try {
+    return Object.fromEntries(
+      str.split('&').map(s => s.split('=')).map(([k, v]) => [k, decodeURIComponent(v || '')])
+    );
+  } catch(e) { return {}; }
+}
+
+function httpAPI(path, method = 'GET', body = null) {
+  return new Promise(resolve => $httpAPI(method, path, body, resolve));
+}
+
+function httpGet(url, timeout = 8) {
+  return new Promise(resolve => {
+    $httpClient.get({ url, timeout }, (e, _, d) => resolve(e ? null : d));
+  });
+}
+
+function httpHead(url, timeout = 5) {
+  return new Promise(resolve => {
+    const t = Date.now();
+    $httpClient.head({ url, timeout }, e => resolve(e ? null : Date.now() - t));
+  });
+}
 
 function flag(cc) {
   if (!cc || cc.length !== 2) return '🌐';
@@ -31,16 +56,16 @@ const SUB = {
   US:'北美洲', CA:'北美洲', MX:'北美洲',
   BR:'南美洲', AR:'南美洲', CL:'南美洲', CO:'南美洲', PE:'南美洲',
   AU:'大洋洲', NZ:'大洋洲',
-  ZA:'非洲', NG:'非洲', EG:'非洲', KE:'非洲', ET:'非洲',
+  ZA:'非洲', NG:'非洲', EG:'非洲', KE:'非洲',
 };
 
 function subRegion(cc) { return (SUB[cc] || '其他地区').replace('›', ' › '); }
 
 function dur(ms) {
   const m = Math.floor(ms / 60000), h = Math.floor(m / 60), d = Math.floor(h / 24);
-  if (d > 0)  return `${d}天 ${h % 24}h`;
-  if (h > 0)  return `${h}h ${m % 60}m`;
-  if (m > 0)  return `${m}m`;
+  if (d > 0) return `${d}天 ${h % 24}h`;
+  if (h > 0) return `${h}h ${m % 60}m`;
+  if (m > 0) return `${m}m`;
   return '刚刚';
 }
 
@@ -59,23 +84,49 @@ function fmtTZDiff(pOff, lOff) {
   return `${d > 0 ? '领先' : '落后'}本机 ${Math.abs(d)}h`;
 }
 
-// ── State ─────────────────────────────────────────────────────────────────────
+// ── Main ──────────────────────────────────────────────────────────────────────
 
-const NOW = Date.now();
-let ipInfo = null, ipv6Addr = null, dnsInfo = null;
-const rtts = [];
-let pending = 4;
+;(async () => {
+  const NOW = Date.now();
+  const params    = getParams($argument || '');
+  const groupName = params.group || 'Proxy';
 
-function tick() { if (--pending === 0) render(); }
+  // — 遍历策略组，获取实际节点名 —
+  let nodeName = 'DIRECT';
+  try {
+    const allGroups  = await httpAPI('/v1/policy_groups');
+    const groupNames = Object.keys(allGroups);
+    let cur = (await httpAPI('/v1/policy_groups/select?group_name=' + encodeURIComponent(groupName))).policy;
+    while (groupNames.includes(cur)) {
+      cur = (await httpAPI('/v1/policy_groups/select?group_name=' + encodeURIComponent(cur))).policy;
+    }
+    nodeName = cur || 'DIRECT';
+  } catch(e) {}
 
-// ── Render ────────────────────────────────────────────────────────────────────
+  // — 并行发出所有请求 —
+  const [ipRaw, v6Raw, dnsRaw, rtt1, rtt2, rtt3] = await Promise.all([
+    httpGet('http://ip-api.com/json/?fields=status,country,countryCode,city,timezone,isp,org,as,asname,proxy,hosting,mobile,query', 8),
+    httpGet('https://api6.ipify.org?format=json', 5),
+    httpGet('http://edns.ip-api.com/json', 5),
+    httpHead(LAT_URL, 5),
+    httpHead(LAT_URL, 5),
+    httpHead(LAT_URL, 5),
+  ]);
 
-function render() {
+  // — 解析响应 —
+  let ipInfo = null;
+  try { ipInfo = JSON.parse(ipRaw); } catch(e) {}
+
+  let ipv6Addr = null;
+  try { ipv6Addr = JSON.parse(v6Raw)?.ip || null; } catch(e) {}
+
+  let dnsInfo = null;
+  try { dnsInfo = JSON.parse(dnsRaw); } catch(e) {}
+
+  const rtts = [rtt1, rtt2, rtt3].filter(r => r !== null);
+
   if (!ipInfo || ipInfo.status !== 'success') {
-    $done({
-      title: '节点信息', content: '⚠️ IP 查询失败，请检查网络',
-      icon: 'exclamationmark.triangle.fill', 'icon-color': '#FF6B6B',
-    });
+    $done({ title: '节点信息', content: '⚠️ IP 查询失败，请检查网络', icon: 'exclamationmark.triangle.fill', 'icon-color': '#FF6B6B' });
     return;
   }
 
@@ -83,16 +134,13 @@ function render() {
   let st = {};
   try { st = JSON.parse($persistentStore.read(STORE_KEY) || '{}'); } catch(e) {}
   const ipChanged = !!st.ip && st.ip !== ipInfo.query;
-  if (!st.ip) {
-    st = { ip: ipInfo.query, since: NOW, chg: 0 };
-    $persistentStore.write(JSON.stringify(st), STORE_KEY);
-  } else if (ipChanged) {
-    st = { ip: ipInfo.query, since: NOW, chg: (st.chg || 0) + 1 };
+  if (!st.ip || ipChanged) {
+    st = { ip: ipInfo.query, since: NOW, chg: ipChanged ? (st.chg || 0) + 1 : 0 };
     $persistentStore.write(JSON.stringify(st), STORE_KEY);
   }
-  const stable   = dur(NOW - (st.since || NOW));
-  const chgNote  = ipChanged ? '  ← 已更换' : '';
-  const chgLine  = st.chg > 0 ? ` · 累计换过 ${st.chg} 次` : '';
+  const stable  = dur(NOW - (st.since || NOW));
+  const chgNote = ipChanged ? '  ← 已更换' : '';
+  const chgLine = st.chg > 0 ? ` · 换过 ${st.chg} 次` : '';
 
   // — 地理 —
   const f   = flag(ipInfo.countryCode);
@@ -105,11 +153,9 @@ function render() {
   // — 时区 —
   const pOff = tzOffHours(ipInfo.timezone);
   const lOff = tzOffHours(Intl.DateTimeFormat().resolvedOptions().timeZone);
-  const utcLabel = pOff !== null
-    ? `UTC${pOff >= 0 ? '+' : ''}${pOff}`
-    : ipInfo.timezone;
-  const wd   = new Date().toLocaleString('zh-CN', { timeZone: ipInfo.timezone, weekday: 'short' });
-  const hhmm = new Date().toLocaleString('zh-CN', { timeZone: ipInfo.timezone, hour: '2-digit', minute: '2-digit', hour12: false });
+  const utcLabel  = pOff !== null ? `UTC${pOff >= 0 ? '+' : ''}${pOff}` : ipInfo.timezone;
+  const wd        = new Date().toLocaleString('zh-CN', { timeZone: ipInfo.timezone, weekday: 'short' });
+  const hhmm      = new Date().toLocaleString('zh-CN', { timeZone: ipInfo.timezone, hour: '2-digit', minute: '2-digit', hour12: false });
   const diffLabel = (pOff !== null && lOff !== null) ? fmtTZDiff(pOff, lOff) : '';
 
   // — 风险标记 —
@@ -121,7 +167,7 @@ function render() {
 
   // — DNS —
   let dnsStr = '未获取';
-  if (dnsInfo && dnsInfo.dns && dnsInfo.dns.ip) {
+  if (dnsInfo?.dns?.ip) {
     dnsStr = dnsInfo.dns.ip;
     if (dnsInfo.dns.geo) dnsStr += `  ${dnsInfo.dns.geo}`;
   }
@@ -137,20 +183,16 @@ function render() {
   // — 本机网络 —
   const netType = ($surge.networkType || '').toUpperCase();
   const ssid    = $surge.ssid || '';
-  const net     = (netType === 'WIFI' || netType === 'WLAN')
+  const net = (netType === 'WIFI' || netType === 'WLAN')
     ? (ssid ? `Wi-Fi · ${ssid}` : 'Wi-Fi')
     : (netType === 'CELLULAR' || netType === 'CELL' ? '蜂窝网络' : (netType || '未知'));
 
-  // — 节点 —
-  const node   = $surge.nodeName   || '直连';
-  const policy = $surge.policyName || 'DIRECT';
-  const v6     = ipv6Addr ? `${ipv6Addr}  ✓` : 'IPv6 不可用';
-
+  const v6  = ipv6Addr ? `${ipv6Addr}  ✓` : 'IPv6 不可用';
   const upd = new Date().toLocaleString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
 
   const content = [
-    `🟢 ${node}`,
-    `   ${policy}`,
+    `🟢 ${nodeName}`,
+    `   ${groupName}`,
     ``,
     `🌐  ${ipInfo.query}${chgNote}`,
     `     ${v6}`,
@@ -171,43 +213,4 @@ function render() {
   ].join('\n');
 
   $done({ title: '节点信息', content, icon: 'network', 'icon-color': '#5B8AF5' });
-}
-
-// ── Requests（并行） ───────────────────────────────────────────────────────────
-
-// 1. 主 IP 信息
-$httpClient.get({
-  url: 'http://ip-api.com/json/?fields=status,country,countryCode,city,timezone,isp,org,as,asname,proxy,hosting,mobile,query',
-  timeout: 8,
-}, (e, _, d) => {
-  if (!e && d) try { ipInfo = JSON.parse(d); } catch(_) {}
-  tick();
-});
-
-// 2. IPv6 检测
-$httpClient.get({
-  url: 'https://api6.ipify.org?format=json',
-  timeout: 5,
-}, (e, _, d) => {
-  if (!e && d) try { ipv6Addr = JSON.parse(d).ip || null; } catch(_) {}
-  tick();
-});
-
-// 3. DNS 泄露检测
-$httpClient.get({
-  url: 'http://edns.ip-api.com/json',
-  timeout: 5,
-}, (e, _, d) => {
-  if (!e && d) try { dnsInfo = JSON.parse(d); } catch(_) {}
-  tick();
-});
-
-// 4. 延迟采样（3次顺序执行）
-(function lat(i) {
-  if (i >= LAT_N) { tick(); return; }
-  const t = Date.now();
-  $httpClient.head({ url: LAT_URL, timeout: 5 }, e => {
-    if (!e) rtts.push(Date.now() - t);
-    lat(i + 1);
-  });
-})(0);
+})();
