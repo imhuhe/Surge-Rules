@@ -45,7 +45,7 @@ function tryRender() {
 
   const dlLine  = dlMbps !== null
     ? `${speedBar(dlMbps)}  ${fmtSpeed(dlMbps)}`
-    : '测速失败，请重试';
+    : '测速失败（请确认已挂代理）';
   const latLine = avg !== null ? `${avg}ms` : '—';
   const jitLine = jit !== null ? `±${jit}ms` : '—';
   const mmLine  = (min !== null && max !== null)

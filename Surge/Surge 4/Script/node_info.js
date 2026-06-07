@@ -137,11 +137,13 @@ function render() {
   // — 本机网络 —
   const netType = ($surge.networkType || '').toUpperCase();
   const ssid    = $surge.ssid || '';
-  const net     = (netType === 'WIFI' && ssid) ? `Wi-Fi · ${ssid}` : (netType || '未知');
+  const net     = (netType === 'WIFI' || netType === 'WLAN')
+    ? (ssid ? `Wi-Fi · ${ssid}` : 'Wi-Fi')
+    : (netType === 'CELLULAR' || netType === 'CELL' ? '蜂窝网络' : (netType || '未知'));
 
   // — 节点 —
-  const node   = $surge.nodeName   || '—';
-  const policy = $surge.policyName || '—';
+  const node   = $surge.nodeName   || '直连';
+  const policy = $surge.policyName || 'DIRECT';
   const v6     = ipv6Addr ? `${ipv6Addr}  ✓` : 'IPv6 不可用';
 
   const upd = new Date().toLocaleString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false });
