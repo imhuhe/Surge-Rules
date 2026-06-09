@@ -1,3 +1,7 @@
+# > Custom
+DOMAIN-SUFFIX,oixcloud.com
+DOMAIN-SUFFIX,tgfcer.com
+
 # > TestFlight
 DOMAIN,testflight.apple.com
 
