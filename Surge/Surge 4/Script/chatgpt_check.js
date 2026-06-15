@@ -31,5 +31,5 @@ function get(url) {
     return
   }
 
-  $done({ title: 'ChatGPT', content: `Available${region}`, icon: 'bubble.left.and.text.bubble.right.fill', 'icon-color': '#10A37F' })
+  $done({ title: 'ChatGPT', content: `Available${region}`, icon: 'sparkles', 'icon-color': '#10A37F' })
 })()

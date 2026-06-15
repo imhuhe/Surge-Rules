@@ -19,9 +19,9 @@ function flag(cc) {
   const region = cc ? ` | Region: ${flag(cc)} ${cc}` : ''
 
   if (resp.status === 200) {
-    $done({ title: 'Netflix', content: `Full library${region}`, icon: 'play.rectangle.fill', 'icon-color': '#E50914' })
+    $done({ title: 'Netflix', content: `Full library${region}`, icon: 'popcorn.fill', 'icon-color': '#E50914' })
   } else if (resp.status === 403) {
-    $done({ title: 'Netflix', content: `Self-produced only${region}`, icon: 'play.rectangle.fill', 'icon-color': '#E50914' })
+    $done({ title: 'Netflix', content: `Self-produced only${region}`, icon: 'popcorn.fill', 'icon-color': '#E50914' })
   } else {
     $done({ title: 'Netflix', content: 'Unavailable', icon: 'xmark.seal.fill', 'icon-color': '#8E8E93' })
   }

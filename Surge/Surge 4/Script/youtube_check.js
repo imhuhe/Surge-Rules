@@ -20,7 +20,7 @@ function flag(cc) {
   const region = cc ? ` | Region: ${flag(cc)} ${cc}` : ''
 
   if (hasPlan) {
-    $done({ title: 'YouTube Premium', content: `Available${region}`, icon: 'play.circle.fill', 'icon-color': '#FF0000' })
+    $done({ title: 'YouTube Premium', content: `Available${region}`, icon: 'play.rectangle.fill', 'icon-color': '#FF0000' })
   } else {
     $done({ title: 'YouTube Premium', content: `Unavailable${region}`, icon: 'xmark.seal.fill', 'icon-color': '#8E8E93' })
   }
