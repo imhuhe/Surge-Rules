@@ -1,9 +1,7 @@
-# > Apple Push
 DOMAIN-KEYWORD,apple.com.edgekey.net
 DOMAIN-SUFFIX,push.apple.com
 DOMAIN-SUFFIX,push-apple.com.akadns.net
 
-# IP Source: https://support.apple.com/en-us/102266
 IP-CIDR,17.249.0.0/16,no-resolve
 IP-CIDR,17.252.0.0/16,no-resolve
 IP-CIDR,17.57.144.0/22,no-resolve

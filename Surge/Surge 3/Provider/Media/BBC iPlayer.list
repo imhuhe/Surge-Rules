@@ -1,4 +1,3 @@
-# > BBC iPlayer
 USER-AGENT,BBCiPlayer*
 DOMAIN-KEYWORD,-uk-live.akamaized.net
 DOMAIN-KEYWORD,bbcfmt

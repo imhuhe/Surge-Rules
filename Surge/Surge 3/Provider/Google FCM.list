@@ -1,5 +1,3 @@
-# > Google FCM
-# According to Firebase FAQ https://firebase.google.com/docs/cloud-messaging/concept-options#messaging-ports-and-your-firewall
 DOMAIN,mtalk.google.com
 DOMAIN,mtalk4.google.com
 DOMAIN,mtalk-staging.google.com

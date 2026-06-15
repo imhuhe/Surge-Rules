@@ -1,4 +1,3 @@
-# > Apple CDN
 PROCESS-NAME,storedownloadd
 USER-AGENT,com.apple.appstored*
 DOMAIN,aod.itunes.apple.com
@@ -13,31 +12,23 @@ DOMAIN,supportdownload.apple.com
 DOMAIN,swcdn.apple.com
 DOMAIN,updates-http.cdn-apple.com
 
-# > Duet
 USER-AGENT,duet*
 
-# > Epic
 DOMAIN-KEYWORD,epicgames
 
-# > Google
 DOMAIN,safebrowsing.googleapis.com
 DOMAIN-SUFFIX,dl.google.com
 
-# > Microsoft
 USER-AGENT,Microsoft%20Remote%20Desktop*
 DOMAIN-SUFFIX,msftconnecttest.com
 
-# > Passkey
 DOMAIN-SUFFIX,auth.com
 
-# > Proxy plugin
 PROCESS-NAME,v2ray
 PROCESS-NAME,ss-local
 
-# > PlayStation
 DOMAIN-SUFFIX,dl.playstation.net
 
-# > Steam
 USER-AGENT,Steam*
 DOMAIN,cm.steampowered.com
 DOMAIN,ol.epicgames.com
@@ -71,7 +62,6 @@ DOMAIN,steamstore-a.akamaihd.net
 DOMAIN,steamusercontent-a.akamaihd.net
 DOMAIN,steamuserimages-a.akamaihd.net
 
-# > Tesla
 DOMAIN,tesla-cdn.thron.cn
 DOMAIN,tesla-cdn.thron.com
 DOMAIN-SUFFIX,solarcity.com
@@ -83,17 +73,13 @@ DOMAIN-SUFFIX,teslamotors.com
 DOMAIN-SUFFIX,teslamotors.com.cn
 DOMAIN-SUFFIX,ts.la
 
-# > UUBooster
 PROCESS-NAME,UUBooster
 
-# > WiFiman
 DOMAIN-SUFFIX,app-measurement.com
 
-# > Xunlei
 USER-AGENT,%E8%BF%85%E9%9B%B7
 DOMAIN-SUFFIX,xunlei.com
 
-# > Download
 PROCESS-NAME,aria2c
 PROCESS-NAME,fdm
 PROCESS-NAME,Folx
@@ -106,7 +92,6 @@ PROCESS-NAME,uTorrent
 PROCESS-NAME,WebTorrent
 PROCESS-NAME,WebTorrent Helper
 
-# > Private Tracker
 DOMAIN-SUFFIX,audiences.me
 DOMAIN-SUFFIX,awesome-hd.me
 DOMAIN-SUFFIX,broadcasthe.net
@@ -137,8 +122,6 @@ DOMAIN-SUFFIX,totheglory.im
 DOMAIN-SUFFIX,smtp
 URL-REGEX,(Subject|HELO|SMTP)
 
-# > UBI
 DOMAIN,uplaypc-s-ubisoft.cdn.ubi.com
 
-# > Tailscale
 IP-CIDR,100.64.0.0/10,no-resolve

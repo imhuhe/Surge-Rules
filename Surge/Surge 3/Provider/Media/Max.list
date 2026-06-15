@@ -1,4 +1,3 @@
-# > Max
 DOMAIN-SUFFIX,max.com
 DOMAIN-SUFFIX,discomax.com
 DOMAIN-SUFFIX,arkoselabs.com
@@ -10,7 +9,6 @@ DOMAIN-SUFFIX,ngtv.io
 DOMAIN-SUFFIX,pypestream.com
 DOMAIN-SUFFIX,warnermediacdn.com
 
-# > Analysis
 DOMAIN,app-analytics-services.com
 DOMAIN,kpck4q-launches.appsflyersdk.com
 DOMAIN,kpck4q-skadsdkless.appsflyersdk.com
