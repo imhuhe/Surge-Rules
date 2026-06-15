@@ -1,116 +1,53 @@
-/*
-https://raw.githubusercontent.com/mieqq/mieqq/master/sub_info_panel.js
-*/
-
 (async () => {
-  let args = getArgs();
-  let info = await getDataInfo(args.url);
-  if (!info) $done();
+  const args = Object.fromEntries(
+    ($argument || '').split('&').map(s => s.split('=')).map(([k, v]) => [k, decodeURIComponent(v || '')])
+  )
 
-  let used = info.download + info.upload;
-  let total = info.total - (info.download + info.upload);
-  let expire = args.expire || info.expire;
-  let content = [`已用：${bytesToSize(used)} / 可用：${bytesToSize(total)}`];
-
-  if (expire) {
-    if (/^[\d.]+$/.test(expire)) expire *= 1000;
-    content.push(`到期时间：${formatTime(expire)}`);
+  const url = args.url
+  if (!url) {
+    $done({ title: args.title || 'Subscription', content: 'No URL configured', icon: args.icon || 'cloud.fill', 'icon-color': '#8E8E93' })
+    return
   }
 
-  let now = new Date();
-  let hour = now.getHours();
-  let minutes = now.getMinutes();
-  hour = hour > 9 ? hour : "0" + hour;
-  minutes = minutes > 9 ? minutes : "0" + minutes;
+  const [err, resp] = await new Promise(r =>
+    $httpClient.get({ url, headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10 }, (e, res) => r([e, res]))
+  )
+
+  if (err || resp.status !== 200) {
+    $done({ title: args.title || 'Subscription', content: 'Failed to fetch subscription info', icon: args.icon || 'cloud.fill', 'icon-color': '#8E8E93' })
+    return
+  }
+
+  const key = Object.keys(resp.headers).find(k => k.toLowerCase() === 'subscription-userinfo')
+  if (!key) {
+    $done({ title: args.title || 'Subscription', content: 'No usage info in response headers', icon: args.icon || 'cloud.fill', 'icon-color': '#8E8E93' })
+    return
+  }
+
+  const info = Object.fromEntries(
+    resp.headers[key].match(/\w+=[\d.eE+]+/g).map(s => s.split('=')).map(([k, v]) => [k, Number(v)])
+  )
+
+  function fmt(bytes) {
+    if (!bytes) return '0 B'
+    const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB']
+    const i = Math.floor(Math.log(bytes) / Math.log(1024))
+    return `${(bytes / Math.pow(1024, i)).toFixed(2)} ${units[i]}`
+  }
+
+  const used = info.upload + info.download
+  const available = info.total - used
+  const lines = [`Used: ${fmt(used)} / Available: ${fmt(available)}`]
+
+  if (info.expire) {
+    const d = new Date(info.expire * 1000)
+    lines.push(`Expires: ${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`)
+  }
 
   $done({
-    title: `${args.title}`,
-    content: content.join("\n"),
-    icon: args.icon || "airplane.circle",
-    "icon-color": args.color || "#007aff",
-  });
-})();
-
-function getArgs() {
-  return Object.fromEntries(
-    $argument
-      .split("&")
-      .map((item) => item.split("="))
-      .map(([k,v]) => [k,decodeURIComponent(v)])
-  );
-}
-
-function getUserInfo(url) {
-  let request = { headers: { "User-Agent": "Surge" },url };
-  return new Promise((resolve,reject) =>
-    $httpClient.get(request,(err,resp) => {
-      if (err != null) {
-        reject(err);
-        return;
-      }
-      if (resp.status !== 200) {
-        reject(resp.status);
-        return;
-      }
-      let header = Object.keys(resp.headers).find(
-        (key) => key.toLowerCase() === "subscription-userinfo"
-      );
-      if (header) {
-        resolve(resp.headers[header]);
-        return;
-      }
-      reject("链接响应头不带有流量信息");
-    })
-  );
-}
-
-async function getDataInfo(url) {
-  const [err,data] = await getUserInfo(url)
-    .then((data) => [null,data])
-    .catch((err) => [err,null]);
-  if (err) {
-    console.log(err);
-    return;
-  }
-
-  return Object.fromEntries(
-    data
-      .match(/\w+=[\d.eE+]+/g)
-      .map((item) => item.split("="))
-      .map(([k,v]) => [k,Number(v)])
-  );
-}
-
-function getRmainingDays(resetDay) {
-  if (!resetDay) return;
-
-  let now = new Date();
-  let today = now.getDate();
-  let month = now.getMonth();
-  let year = now.getFullYear();
-  let daysInMonth;
-
-  if (resetDay > today) {
-    daysInMonth = 0;
-  } else {
-    daysInMonth = new Date(year,month + 1,0).getDate();
-  }
-
-  return daysInMonth - today + resetDay;
-}
-
-function bytesToSize(bytes) {
-  if (bytes === 0) return "0B";
-  let k = 1024;
-  sizes = ["B","KiB","MiB","GiB","TiB","PiB"];
-  let i = Math.floor(Math.log(bytes) / Math.log(k));
-  return (bytes / Math.pow(k,i)).toFixed(2) + " " + sizes[i];
-}
-
-function formatTime(time) {
-  let dateObj = new Date(time);
-  let year = dateObj.getFullYear();
-  let month = dateObj.getMonth() + 1;
-  let day = dateObj.getDate();
-  return year + "年" + month + "月" + day + "日";
-}
+    title: args.title || 'Subscription',
+    content: lines.join('\n'),
+    icon: args.icon || 'cloud.fill',
+    'icon-color': args.color || '#333333',
+  })
+})()
