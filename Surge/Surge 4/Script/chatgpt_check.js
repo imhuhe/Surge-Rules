@@ -12,21 +12,23 @@ function get(url) {
 }
 
 ;(async () => {
-  const [trace, home] = await Promise.all([
-    get('https://chat.openai.com/cdn-cgi/trace'),
-    get('https://chat.openai.com/'),
+  // chat.openai.com 已 308 跳转到 chatgpt.com，旧脚本要 home===200 故永远误报 Unreachable。
+  // 改用 trace 判可达+地区；封锁用 compliance 接口的 unsupported_country 标记。
+  const [trace, comp] = await Promise.all([
+    get('https://chatgpt.com/cdn-cgi/trace'),
+    get('https://api.openai.com/compliance/cookie_requirements'),
   ])
 
   const cc = (trace?.body?.match(/loc=([A-Z]{2})/) || [])[1] || ''
-  const accessible = home?.status === 200
   const region = cc ? ` | Region: ${flag(cc)} ${cc}` : ''
 
-  if (!accessible) {
+  if (trace?.status !== 200) {
     $done({ title: 'ChatGPT', content: `Unreachable${region}`, icon: 'xmark.seal.fill', 'icon-color': '#8E8E93' })
     return
   }
 
-  if (cc && BLOCKED.has(cc)) {
+  const blocked = /unsupported_country/i.test(comp?.body || '') || (cc && BLOCKED.has(cc))
+  if (blocked) {
     $done({ title: 'ChatGPT', content: `Restricted${region}`, icon: 'xmark.seal.fill', 'icon-color': '#8E8E93' })
     return
   }

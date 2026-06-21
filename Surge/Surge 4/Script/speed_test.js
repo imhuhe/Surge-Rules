@@ -56,19 +56,21 @@ function tryRender() {
 }
 
 ;(function dl() {
-  const B5 = 5 * 1024 * 1024, t0 = Date.now()
-  $httpClient.get({ url: CF(B5), timeout: 40, 'binary-mode': true }, (e) => {
+  // 先拉 1MB 探路、超时 15s：烂节点上也能快速出数不再长挂；
+  // 只有探到 >30Mbps 才升级到 10MB 取更准的值。
+  const B1 = 1 * 1024 * 1024, t0 = Date.now()
+  $httpClient.get({ url: CF(B1), timeout: 15, 'binary-mode': true }, (e) => {
     if (e) { dlDone = true; tryRender(); return }
-    const mbps5 = B5 * 8 / ((Date.now() - t0) / 1000) / 1e6
+    const mbps1 = B1 * 8 / ((Date.now() - t0) / 1000) / 1e6
 
-    if (mbps5 > 50) {
-      const B25 = 25 * 1024 * 1024, t1 = Date.now()
-      $httpClient.get({ url: CF(B25), timeout: 40, 'binary-mode': true }, (e2) => {
-        dlMbps = e2 ? mbps5 : B25 * 8 / ((Date.now() - t1) / 1000) / 1e6
+    if (mbps1 > 30) {
+      const B10 = 10 * 1024 * 1024, t1 = Date.now()
+      $httpClient.get({ url: CF(B10), timeout: 15, 'binary-mode': true }, (e2) => {
+        dlMbps = e2 ? mbps1 : B10 * 8 / ((Date.now() - t1) / 1000) / 1e6
         dlDone = true; tryRender()
       })
     } else {
-      dlMbps = mbps5
+      dlMbps = mbps1
       dlDone = true; tryRender()
     }
   })
