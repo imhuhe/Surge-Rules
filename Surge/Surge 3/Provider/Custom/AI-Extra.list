@@ -1,0 +1,27 @@
+# NAME: AI-Extra
+# DESCRIPTION: AI Suite 增量补充（dler 上游未覆盖的新域名），与 AI Suite.list 同目标
+# SOURCE: 筛自 666OS/rules AI.txt，已剔除共享基建域名与 PROCESS-NAME/USER-AGENT
+# UPDATED: 2026-07-03
+
+# Claude 生态
+DOMAIN-SUFFIX,clau.de
+DOMAIN-SUFFIX,claudemcpclient.com
+DOMAIN-SUFFIX,claudemcpcontent.com
+DOMAIN-SUFFIX,agentclientprotocol.com
+
+# ChatGPT 补口（语音 + 登录验证码）
+DOMAIN-SUFFIX,chatgpt.livekit.cloud
+DOMAIN-SUFFIX,host.livekit.cloud
+DOMAIN-SUFFIX,turn.livekit.cloud
+DOMAIN-SUFFIX,client-api.arkoselabs.com
+
+# Google AI 入口
+DOMAIN-SUFFIX,gemini.google.com
+DOMAIN-SUFFIX,aistudio.google.com
+DOMAIN-SUFFIX,ai.studio
+DOMAIN-SUFFIX,jules.google
+DOMAIN-SUFFIX,notebooklm.google
+DOMAIN-SUFFIX,notebooklm.google.com
+DOMAIN,generativelanguage.googleapis.com
+DOMAIN,aicode.googleapis.com
+DOMAIN,aida.googleapis.com
