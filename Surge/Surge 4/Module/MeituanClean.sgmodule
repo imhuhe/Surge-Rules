@@ -16,9 +16,9 @@
 
 # —— 其余上报通道 ——
 ^https?:\/\/d?report\.meituan\.(?:com|net)\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
-# msp.meituan.com/api/affogato 已放行：v1 曾凭"上行大"误判为上报通道拦截，
-# 但 2026-07-21 重装实测 App 全程无业务数据接口，疑似此接口承载配置/数据下发，
-# 拦截后 App 回落本地兜底渲染(旧广告不消失、工具区回落内置默认)。待验证后再决定是否重新拦。
+# msp/affogato: 净化前实测 in=329 out=38373，带 csec* 参数(美团客户端安全SDK设备指纹采集)，
+# 纯上报无疑，下行仅为 ack。曾一度怀疑是数据下发而放行，经原始样本证伪，恢复拦截。
+^https:\/\/msp\.meituan\.com\/api\/affogato data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/sessions\.bugsnag\.com\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 
 # —— 广告：蒲公英(pgy)广告平台 曝光回调与竞价交换 ——
