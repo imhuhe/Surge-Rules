@@ -1,0 +1,96 @@
+#!name = 高德地图净化
+#!desc = 只保留地图本身：去开屏广告、首页推广位、探索信息流、我的页商城/车标/皮肤/虚拟资产、打车推广、任务签到游戏化、登录诱导、遥测上报。基于 QingRex/LoonKissSurge 高德地图去广告(2026-02-22)重制，2026-07-21 实测抓包补全新增坑位。
+#!category = 广告拦截
+#!openUrl = https://apps.apple.com/app/id461703208
+
+[Rule]
+# 纯广告素材域
+DOMAIN,optimus-ads.amap.com,REJECT,extended-matching,pre-matching
+DOMAIN,amap-aos-info-nogw.amap.com,REJECT,extended-matching,pre-matching
+DOMAIN,free-aos-cdn-image.amap.com,REJECT,extended-matching,pre-matching
+DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
+# 车标商城 / 虚拟资产素材域
+DOMAIN,popular-car.amap.com,REJECT,extended-matching,pre-matching
+DOMAIN,vassets.amap.com,REJECT,extended-matching,pre-matching
+
+[Map Local]
+# —— 开屏广告 ——
+^https:\/\/m5\.amap\.com\/ws\/valueadded\/alimama\/splash_screen data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+# —— 首页：推广位、AI 快捷问答、热词、场景推荐 ——
+^https:\/\/m5\.amap\.com\/ws\/promote\/main-page\/assets data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/faas\/amap-navigation\/(?:main-page-assets|main-page-aiqs|main-page-location|card-service-plan-home|ridewalk-end-fc|usr-profile-fc\/homeV2) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/ai\.amap\.com\/v1\/ai_rec\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/shield\/scene\/recommend data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/shield\/search\/new_hotword data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/search\/voice\/guide_query_v2 data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/valueadded\/weather\/v2 data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/oss\.amap\.com\/ws\/banner\/lists\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+# —— 探索 tab：信息流、内容中心、达人推荐 ——
+^https:\/\/m5\.amap\.com\/ws\/info_bff\/ContentCenter data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/user\/relation\/recommend\/rec data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/aos\/spot\/rec\/publisher\/emojis data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+# —— 我的 tab：商城、车标/皮肤/语音包、虚拟资产、数字人 ——
+^https:\/\/m5\.amap\.com\/ws\/shield\/dsp\/profile\/index\/nodefaasv3 data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/user\/theme\/(?:feeds|biz_tab\/list|tab\/data\/list|v3\/tab\/user\/assets|voice\/resource\/info) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/user\/goods\/assembler\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/user\/vassets\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/user\/shopping_mall\/entrance\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/aos\/personal\/(?:digital|ditigal|sound)\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/aos\/voice\/user\/personal\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/center\.amap\.com\/ws\/aos\/carlogo\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/aos\/main\/page\/product\/list data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# 更多工具 / 高德精选 工具箱
+^https:\/\/sns\.amap\.com\/ws\/opc\/tools\/list data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+# —— 任务 / 签到 / 福袋 等游戏化 ——
+^https:\/\/m5\.amap\.com\/ws\/faas\/amap-navigation\/task-platform\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/activity\/task\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/user\/facade\/reach\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+# —— 登录诱导 / 消息盒子 ——
+^https:\/\/m5\.amap\.com\/ws\/aggregate\/user\/login-guide data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/(?:m5|center)\.amap\.com\/ws\/(?:message\/notice\/list|msgbox\/pull_mp) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/sns\.amap\.com\/ws\/msgbox\/pull_mp data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+# —— 打车 tab：推广卡片、优惠券、会员、活动 ——
+^https:\/\/m5-zb\.amap\.com\/ws\/boss\/(?:order\/car\/(?:feedback\/get_card_questions|feedback\/viptips|king_toolbox_car_bubble|remark\/satisfactionConf|rights_information|beforeOrderPopupInfo|configInfo)|order_web\/friendly_information|car\/order\/(?:content_info|lottie_info|theme_info)|tips\/onscene_visual_optimization|transportation\/diversion\/) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5-zb\.amap\.com\/ws\/(?:ccoupon|promotion-web|vip|yuece|galaxy)\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5-zb\.amap\.com\/ws\/ride\/home\/page\/get_commuting_card data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/info\.amap\.com\/ws\/shield\/galaxy\/data data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+# —— 搜索 / POI 页推广 ——
+^https:\/\/m5\.amap\.com\/ws\/shield\/search_poi\/tips_adv data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/process\/orderList data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/mapapi\/hint_text\/offline_data data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+# —— 遥测 / 埋点上报（不影响功能，纯上行日志）——
+^https:\/\/awaken\.amap\.com\/ws\/h5_log data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5-x\.amap\.com\/+ws\/shield\/(?:alc\/collect|amapstream\/upload) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/user\/fatigue\/report data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/asa\/ads_attribution data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/abs\/dogfood\/user\/check data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+[Body Rewrite]
+http-response-jq ^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/process\/marketingOperationStructured\? 'delpaths([["data","commonMaterial"]])'
+http-response-jq ^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/process\/marketingOperationStructured\? 'delpaths([["data","tipsOperationLocation"]])'
+http-response-jq ^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/process\/marketingOperationStructured\? 'delpaths([["data","resourcePlacement"]])'
+http-response-jq ^https:\/\/m5\.amap\.com\/ws\/shield\/search_poi\/homepage\? 'delpaths([["history_tags"]])'
+http-response-jq ^https:\/\/m5-zb\.amap\.com\/ws\/sharedtrip\/taxi\/order_detail_car_tips\? 'delpaths([["data","carTips","data","popupInfo"]])'
+
+[Script]
+移除路线规划推广 = type=http-response, pattern=^https:\/\/m5\.amap\.com\/ws\/aos\/perception\/publicTravel\/beforeNavi\?, script-path=https://kelee.one/Resource/JavaScript/Amap/Amap_remove_ads.js, requires-body=true
+移除路线规划、导航结束页推广 = type=http-response, pattern=^https:\/\/m5\.amap\.com\/ws\/bus\/plan\/integrate\?, script-path=https://kelee.one/Resource/JavaScript/Amap/Amap_remove_ads.js, requires-body=true
+移除导航详情页底部酒店、处理附近页 = type=http-response, pattern=^https:\/\/m5\.amap\.com\/ws\/c3frontend\/(?:af-(?:hotel|launch)\/page\/main|af-nearby\/nearby), script-path=https://kelee.one/Resource/JavaScript/Amap/Amap_remove_ads.js, requires-body=true
+移除路线规划推广2 = type=http-response, pattern=^https:\/\/m5\.amap\.com\/ws\/perception\/drive\/(?:routeInfo|routePlan), script-path=https://kelee.one/Resource/JavaScript/Amap/Amap_remove_ads.js, requires-body=true
+移除搜索栏推广 = type=http-response, pattern=^https:\/\/m5\.amap\.com\/ws\/shield\/search_bff\/hotword\?, script-path=https://kelee.one/Resource/JavaScript/Amap/Amap_remove_ads.js, requires-body=true
+移除搜索详情页推广 = type=http-response, pattern=^https:\/\/m5\.amap\.com\/ws\/shield\/search_poi\/(?:mps|search\/sp|sug|tips_operation_location), script-path=https://kelee.one/Resource/JavaScript/Amap/Amap_remove_ads.js, requires-body=true
+移除首页推广 = type=http-response, pattern=^https:\/\/m5\.amap\.com\/ws\/faas\/amap-navigation\/card-service-plan-home, script-path=https://kelee.one/Resource/JavaScript/Amap/Amap_remove_ads.js, requires-body=true
+移除首页推广2 = type=http-response, pattern=^https:\/\/m5\.amap\.com\/ws\/shield\/frogserver\/aocs\/updatable\/1\?, script-path=https://kelee.one/Resource/JavaScript/Amap/Amap_remove_ads.js, requires-body=true
+移除附近页推广 = type=http-response, pattern=^https:\/\/m5\.amap\.com\/ws\/shield\/search\/nearbyrec_smart\?, script-path=https://kelee.one/Resource/JavaScript/Amap/Amap_remove_ads.js, requires-body=true
+移除导航详情页推广 = type=http-response, pattern=^https:\/\/(?:info|m5)\.amap\.com\/ws\/shield\/search\/(?:common\/coupon\/info|poi\/detail), script-path=https://kelee.one/Resource/JavaScript/Amap/Amap_remove_ads.js, requires-body=true
+
+[MITM]
+hostname = %APPEND% *.amap.com
