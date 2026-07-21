@@ -1,5 +1,5 @@
 #!name = 高德地图净化
-#!desc = 只保留地图本身：去开屏广告、首页推广位、探索信息流、我的页商城/车标/皮肤/虚拟资产、打车推广、任务签到游戏化、登录诱导、遥测上报。基于 QingRex/LoonKissSurge 高德地图去广告(2026-02-22)重制，2026-07-21 实测抓包补全新增坑位。
+#!desc = 只保留地图本身。第二轮加强：打车/AI对话/探索三个 tab 的后端整域封杀，我的页商城车标皮肤虚拟资产全清，UGC实拍图不加载。基于 QingRex/LoonKissSurge 高德地图去广告(2026-02-22)重制，2026-07-21 实测抓包补全。注意：底部 tab 按钮本身是原生UI删不掉，点进去是空白页。
 #!category = 广告拦截
 #!openUrl = https://apps.apple.com/app/id461703208
 
@@ -12,6 +12,14 @@ DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 # 车标商城 / 虚拟资产素材域
 DOMAIN,popular-car.amap.com,REJECT,extended-matching,pre-matching
 DOMAIN,vassets.amap.com,REJECT,extended-matching,pre-matching
+# 打车业务后端（整域封杀，打车 tab 彻底空白）
+DOMAIN,m5-zb.amap.com,REJECT,extended-matching,pre-matching
+# AI 对话 / 探索页推荐引擎
+DOMAIN,ai.amap.com,REJECT,extended-matching,pre-matching
+# 社区工具箱 / 更多工具
+DOMAIN,sns.amap.com,REJECT,extended-matching,pre-matching
+# UGC 评论实拍图（探索信息流主要图源，POI 详情页图片一并消失）
+DOMAIN,aos-comment.amap.com,REJECT,extended-matching,pre-matching
 
 [Map Local]
 # —— 开屏广告 ——
@@ -27,23 +35,21 @@ DOMAIN,vassets.amap.com,REJECT,extended-matching,pre-matching
 ^https:\/\/m5\.amap\.com\/ws\/valueadded\/weather\/v2 data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/oss\.amap\.com\/ws\/banner\/lists\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 
-# —— 探索 tab：信息流、内容中心、达人推荐 ——
-^https:\/\/m5\.amap\.com\/ws\/info_bff\/ContentCenter data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5\.amap\.com\/ws\/user\/relation\/recommend\/rec data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5\.amap\.com\/ws\/aos\/spot\/rec\/publisher\/emojis data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# —— 探索 tab：信息流、内容中心、达人推荐、AI 内容卡 ——
+^https:\/\/m5\.amap\.com\/ws\/info_bff\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/aos\/spot\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/(?:ai\/content|middle_state\/) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 
-# —— 我的 tab：商城、车标/皮肤/语音包、虚拟资产、数字人 ——
+# —— AI 对话 tab ——
+^https:\/\/m5\.amap\.com\/ws\/c3(?:frontend)?\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+# —— 我的 tab：商城、车标/皮肤/语音包、虚拟资产、数字人、社交 ——
 ^https:\/\/m5\.amap\.com\/ws\/shield\/dsp\/profile\/index\/nodefaasv3 data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5\.amap\.com\/ws\/user\/theme\/(?:feeds|biz_tab\/list|tab\/data\/list|v3\/tab\/user\/assets|voice\/resource\/info) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5\.amap\.com\/ws\/user\/goods\/assembler\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5\.amap\.com\/ws\/user\/vassets\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5\.amap\.com\/ws\/user\/shopping_mall\/entrance\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5\.amap\.com\/ws\/aos\/personal\/(?:digital|ditigal|sound)\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/user\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/aos\/personal\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/aos\/voice\/user\/personal\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-^https:\/\/center\.amap\.com\/ws\/aos\/carlogo\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/center\.amap\.com\/ws\/(?:aos\/carlogo|pb\/account\/check\/theme)\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/aos\/main\/page\/product\/list data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-# 更多工具 / 高德精选 工具箱
-^https:\/\/sns\.amap\.com\/ws\/opc\/tools\/list data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 
 # —— 任务 / 签到 / 福袋 等游戏化 ——
 ^https:\/\/m5\.amap\.com\/ws\/faas\/amap-navigation\/task-platform\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
@@ -55,11 +61,9 @@ DOMAIN,vassets.amap.com,REJECT,extended-matching,pre-matching
 ^https:\/\/(?:m5|center)\.amap\.com\/ws\/(?:message\/notice\/list|msgbox\/pull_mp) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/sns\.amap\.com\/ws\/msgbox\/pull_mp data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 
-# —— 打车 tab：推广卡片、优惠券、会员、活动 ——
-^https:\/\/m5-zb\.amap\.com\/ws\/boss\/(?:order\/car\/(?:feedback\/get_card_questions|feedback\/viptips|king_toolbox_car_bubble|remark\/satisfactionConf|rights_information|beforeOrderPopupInfo|configInfo)|order_web\/friendly_information|car\/order\/(?:content_info|lottie_info|theme_info)|tips\/onscene_visual_optimization|transportation\/diversion\/) data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5-zb\.amap\.com\/ws\/(?:ccoupon|promotion-web|vip|yuece|galaxy)\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5-zb\.amap\.com\/ws\/ride\/home\/page\/get_commuting_card data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+# —— 打车 tab（m5-zb 已整域 REJECT，此处仅补 m5/info 上的打车导流位）——
 ^https:\/\/info\.amap\.com\/ws\/shield\/galaxy\/data data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/(?:galaxy|valueadded\/private_car)\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 
 # —— 搜索 / POI 页推广 ——
 ^https:\/\/m5\.amap\.com\/ws\/shield\/search_poi\/tips_adv data-type=text data="{}" status-code=200 header="Content-Type:application/json"
