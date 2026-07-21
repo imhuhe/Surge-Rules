@@ -1,0 +1,33 @@
+#!name = 美团净化
+#!desc = 埋点上报整域静默 + 广告营销位清空。基于 2026-07-21 iPhone 实测抓包(828条)重制。策略比高德保守：美团每个 tab 都是真实交易入口(外卖/团购/支付)，只清广告与遥测，不做整 tab 封杀。HTTPDNS 拦截在 HTTPDNS.list 内维护，不在本模块重复。
+#!category = 广告拦截
+#!openUrl = https://apps.apple.com/app/id423084029
+
+[Map Local]
+# —— 埋点上报整域静默：149 条 *.d.meituan.net 实测全为 POST 到根路径，无 GET 资源，整域安全 ——
+^https?:\/\/[\w-]+\.d\.meituan\.net\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+
+# —— 美团 LX 统计 SDK：上行流量第一名(31次/191KB) ——
+^https?:\/\/lx0?\.meituan\.(?:com|net)\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+
+# —— 点评 CAT 监控埋点 ——
+^https?:\/\/cat(?:front|dot)\.dianping\.com\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+^https?:\/\/mlog\.dianping\.com\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+
+# —— 其余上报通道 ——
+^https?:\/\/d?report\.meituan\.(?:com|net)\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+^https:\/\/msp\.meituan\.com\/api\/affogato data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+^https:\/\/sessions\.bugsnag\.com\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
+# —— 广告：蒲公英(pgy)广告平台 曝光回调与竞价交换 ——
+^https:\/\/market-fin\.meituan\.com\/ad\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+^https:\/\/mgm\.meituan\.com\/marketing\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+
+# —— 钱包底部横幅 + 弹窗频控上报 ——
+^https:\/\/npay\.meituan\.com\/(?:conch\/wallet\/bottom-banner|api\/flow-distribute\/frequency\/report) data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+
+# —— 骚扰问卷 ——
+^https:\/\/cem\.meituan\.com\/survey\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+
+[MITM]
+hostname = %APPEND% lx0.meituan.com, lx.meituan.net, *.d.meituan.net, catfront.dianping.com, catdot.dianping.com, mlog.dianping.com, report.meituan.com, dreport.meituan.net, msp.meituan.com, market-fin.meituan.com, mgm.meituan.com, npay.meituan.com, cem.meituan.com, sessions.bugsnag.com

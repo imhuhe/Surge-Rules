@@ -4,6 +4,7 @@ DOMAIN,httpdns.alicdn.com
 
 DOMAIN,httpdns-api.aliyuncs.com
 DOMAIN,httpdns-sc.aliyuncs.com
+DOMAIN,resolvers-cn.httpdns.aliyuncs.com
 IP-CIDR,203.107.1.0/24,no-resolve
 
 DOMAIN,httpsdns.baidu.com
@@ -25,6 +26,11 @@ IP-CIDR,103.224.222.208/32,no-resolve
 DOMAIN,kuaishou.httpdns.pro
 
 DOMAIN,httpdns.meituan.com
+DOMAIN,httpdnsmultiapivip.meituan.com
+DOMAIN,dnspod.meituan.httpdns.qcloud.com
+DOMAIN,dnspod.meituan.httpdns.start.qcloud.com
+IP-CIDR,103.37.152.224/32,no-resolve
+IP-CIDR,103.37.155.60/32,no-resolve
 
 DOMAIN,httpdns.yunxindns.com
 DOMAIN,httpdns.n.netease.com
