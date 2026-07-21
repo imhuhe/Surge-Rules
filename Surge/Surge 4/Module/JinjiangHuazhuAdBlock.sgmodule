@@ -1,10 +1,13 @@
 #!name = 锦江荟广告拦截
-#!desc = 拦截锦江荟开屏广告(adLabel/getAdList)与首页弹窗广告(sensors-ma popup_configs)；仅覆盖2026-07-21实测确认的两个广告位，华住会待补测
+#!desc = 拦截锦江荟开屏广告(adLabel/getAdList)+首页H5营销活动页(h5.bestwehotel.com/view，含好券天天领等弹窗)；sensors-ma popup_configs规则保留作兜底；仅覆盖2026-07-21实测确认的广告位，华住会待补测
 #!category = 广告拦截
 
 [MITM]
-hostname = %APPEND% hwy-gapi.bestwehotel.com, sensors-ma.bestwehotel.com
+hostname = %APPEND% hwy-gapi.bestwehotel.com, sensors-ma.bestwehotel.com, h5.bestwehotel.com
 
 [Map Local]
 ^https:\/\/hwy-gapi\.bestwehotel\.com\/message\/adLabel\/v2\/getAdList data-type=text data="{\"code\":\"0\",\"msg\":null,\"result\":null}" status-code=200
 ^https:\/\/sensors-ma\.bestwehotel\.com\/api\/v2\/sfo\/user_popup_configs data-type=text data="{\"min_sdk_version_required\":\"0.1.0\",\"popup_interval_global\":{\"value\":0,\"unit\":\"SECOND\",\"natural\":false},\"config_pull_interval_ms\":600000,\"popup_plans\":[]}" status-code=200
+
+[URL Rewrite]
+^https:\/\/h5\.bestwehotel\.com\/view\/ - reject
