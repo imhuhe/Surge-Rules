@@ -5,6 +5,6 @@
 [MITM]
 hostname = %APPEND% hwy-gapi.bestwehotel.com, sensors-ma.bestwehotel.com
 
-[URL Rewrite]
-^https:\/\/hwy-gapi\.bestwehotel\.com\/message\/adLabel\/v2\/getAdList - reject-dict
-^https:\/\/sensors-ma\.bestwehotel\.com\/api\/v2\/sfo\/user_popup_configs - reject-dict
+[Map Local]
+^https:\/\/hwy-gapi\.bestwehotel\.com\/message\/adLabel\/v2\/getAdList data-type=text data="{\"code\":\"0\",\"msg\":null,\"result\":null}" status-code=200
+^https:\/\/sensors-ma\.bestwehotel\.com\/api\/v2\/sfo\/user_popup_configs data-type=text data="{\"popup_plans\":[]}" status-code=200
