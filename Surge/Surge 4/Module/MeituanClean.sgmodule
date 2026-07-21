@@ -38,5 +38,8 @@ http-response-jq ^https:\/\/apimobile\.meituan\.com\/group\/v4\/poi\/tuan\/list\
 # —— 支付完成后的"你可能还喜欢"弹窗推荐(valLab.position=pay_popup) ——
 http-response-jq ^https:\/\/apimobile\.meituan\.com\/group\/v1\/recommend\/unity\/recommends '.data = []'
 
+# —— "我的"页工具区：生活工具/公益与互助/与美团合作 共3组12项，整组清空 ——
+http-response-jq ^https:\/\/mt-personalcenter\.meituan\.com\/secondPage\/tool '.data = []'
+
 [MITM]
-hostname = %APPEND% lx0.meituan.com, lx.meituan.net, *.d.meituan.net, catfront.dianping.com, catdot.dianping.com, mlog.dianping.com, report.meituan.com, dreport.meituan.net, msp.meituan.com, market-fin.meituan.com, mgm.meituan.com, npay.meituan.com, cem.meituan.com, sessions.bugsnag.com, apimobile.meituan.com
+hostname = %APPEND% lx0.meituan.com, lx.meituan.net, *.d.meituan.net, catfront.dianping.com, catdot.dianping.com, mlog.dianping.com, report.meituan.com, dreport.meituan.net, msp.meituan.com, market-fin.meituan.com, mgm.meituan.com, npay.meituan.com, cem.meituan.com, sessions.bugsnag.com, apimobile.meituan.com, mt-personalcenter.meituan.com
