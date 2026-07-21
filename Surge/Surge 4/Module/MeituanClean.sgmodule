@@ -29,5 +29,14 @@
 # —— 骚扰问卷 ——
 ^https:\/\/cem\.meituan\.com\/survey\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
+[Body Rewrite]
+# —— 首页团购瀑布流：剔除付费广告卡片，保留自然结果 ——
+# 实测 9 张卡片中 6 张 adInfo.type=="default" 且带 impressionUrl(曝光计费)，全是高客单价广告位；
+# 自然结果 adInfo 为空。删 item 而非整接口，顶层 32 个字段与分页信息保持不变。
+http-response-jq ^https:\/\/apimobile\.meituan\.com\/group\/v4\/poi\/tuan\/list\/ '(.gathers[]?.items) |= map(select(.adInfo.type != "default"))'
+
+# —— 支付完成后的"你可能还喜欢"弹窗推荐(valLab.position=pay_popup) ——
+http-response-jq ^https:\/\/apimobile\.meituan\.com\/group\/v1\/recommend\/unity\/recommends '.data = []'
+
 [MITM]
-hostname = %APPEND% lx0.meituan.com, lx.meituan.net, *.d.meituan.net, catfront.dianping.com, catdot.dianping.com, mlog.dianping.com, report.meituan.com, dreport.meituan.net, msp.meituan.com, market-fin.meituan.com, mgm.meituan.com, npay.meituan.com, cem.meituan.com, sessions.bugsnag.com
+hostname = %APPEND% lx0.meituan.com, lx.meituan.net, *.d.meituan.net, catfront.dianping.com, catdot.dianping.com, mlog.dianping.com, report.meituan.com, dreport.meituan.net, msp.meituan.com, market-fin.meituan.com, mgm.meituan.com, npay.meituan.com, cem.meituan.com, sessions.bugsnag.com, apimobile.meituan.com

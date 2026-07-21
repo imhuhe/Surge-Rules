@@ -27,6 +27,8 @@ DOMAIN,kuaishou.httpdns.pro
 
 DOMAIN,httpdns.meituan.com
 DOMAIN,httpdnsmultiapivip.meituan.com
+DOMAIN,httpdnsmultiapi.meituan.com
+IP-CIDR,203.76.217.49/32,no-resolve
 DOMAIN,dnspod.meituan.httpdns.qcloud.com
 DOMAIN,dnspod.meituan.httpdns.start.qcloud.com
 IP-CIDR,103.37.152.224/32,no-resolve
