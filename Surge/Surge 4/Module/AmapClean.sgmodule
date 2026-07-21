@@ -21,7 +21,23 @@ DOMAIN,sns.amap.com,REJECT,extended-matching,pre-matching
 # UGC 评论实拍图（探索信息流主要图源，POI 详情页图片一并消失）
 DOMAIN,aos-comment.amap.com,REJECT,extended-matching,pre-matching
 
+[URL Rewrite]
+# 整域封杀（走 HTTP 层，不受主配置 ASN.China → Direct 抢先匹配影响）
+^https?:\/\/m5-zb\.amap\.com\/ - reject
+^https?:\/\/ai\.amap\.com\/ - reject
+^https?:\/\/sns\.amap\.com\/ - reject
+^https?:\/\/aos-comment\.amap\.com\/ - reject
+^https?:\/\/optimus-ads\.amap\.com\/ - reject
+^https?:\/\/popular-car\.amap\.com\/ - reject
+^https?:\/\/vassets\.amap\.com\/ - reject
+# 探索页 / POI 推荐图源
+^https?:\/\/store\.is\.autonavi\.com\/(?:showpic|query_pic) - reject
+
 [Map Local]
+# —— 高德快报 / 本地头条 新闻流 ——
+^https:\/\/center\.amap\.com\/ws\/amc\/server\/conv\/raise_list data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/msgbox\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+
 # —— 开屏广告 ——
 ^https:\/\/m5\.amap\.com\/ws\/valueadded\/alimama\/splash_screen data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 
