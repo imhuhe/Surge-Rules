@@ -48,7 +48,7 @@ DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 
 # —— 我的 tab：商城、车标/皮肤/语音包、虚拟资产、数字人、社交 ——
 ^https:\/\/m5\.amap\.com\/ws\/shield\/dsp\/profile\/index\/nodefaasv3 data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5\.amap\.com\/ws\/user\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+^https:\/\/m5\.amap\.com\/ws\/user\/(?:theme|goods|vassets|shopping_mall|relation|fatigue|facade)\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/aos\/personal\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/aos\/voice\/user\/personal\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/center\.amap\.com\/ws\/(?:aos\/carlogo|pb\/account\/check\/theme)\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
@@ -57,10 +57,8 @@ DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 # —— 任务 / 签到 / 福袋 等游戏化 ——
 ^https:\/\/m5\.amap\.com\/ws\/faas\/amap-navigation\/task-platform\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/activity\/task\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
-^https:\/\/m5\.amap\.com\/ws\/user\/facade\/reach\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— 登录诱导 / 消息盒子 ——
-^https:\/\/m5\.amap\.com\/ws\/aggregate\/user\/login-guide data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
+# —— 消息盒子（登录相关接口已全部放行：passport / center auth / sync / 一键登录）——
 ^https:\/\/(?:m5|center)\.amap\.com\/ws\/(?:message\/notice\/list|msgbox\/pull_mp) data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/sns\.amap\.com\/ws\/msgbox\/pull_mp data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
