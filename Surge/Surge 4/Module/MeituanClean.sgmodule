@@ -29,6 +29,13 @@
 # —— 骚扰问卷 ——
 ^https:\/\/cem\.meituan\.com\/survey\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
+# —— 广告图源静默：返回 1x1 透明 GIF ——
+# /adunion/=广告联盟素材, /recommendimage/=推荐位素材，均为广告专用路径；
+# 正常内容图走 /deal/ /dealpic/ /content/ /channelpictures/ 等其他前缀，不受影响。
+# 局限：只让图消失，卡片骨架仍在(表现为空白块)。API 层剔除见下方 Body Rewrite。
+^https?:\/\/p\d\.meituan\.net\/adunion\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
+^https?:\/\/p\d\.meituan\.net\/recommendimage\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
+
 [Body Rewrite]
 # —— 首页团购瀑布流：剔除付费广告卡片，保留自然结果 ——
 # 实测 9 张卡片中 6 张 adInfo.type=="default" 且带 impressionUrl(曝光计费)，全是高客单价广告位；
@@ -42,4 +49,4 @@ http-response-jq ^https:\/\/apimobile\.meituan\.com\/group\/v1\/recommend\/unity
 http-response-jq ^https:\/\/mt-personalcenter\.meituan\.com\/secondPage\/tool '.data = []'
 
 [MITM]
-hostname = %APPEND% lx0.meituan.com, lx.meituan.net, *.d.meituan.net, catfront.dianping.com, catdot.dianping.com, mlog.dianping.com, report.meituan.com, dreport.meituan.net, msp.meituan.com, market-fin.meituan.com, mgm.meituan.com, npay.meituan.com, cem.meituan.com, sessions.bugsnag.com, apimobile.meituan.com, mt-personalcenter.meituan.com
+hostname = %APPEND% lx0.meituan.com, lx.meituan.net, *.d.meituan.net, catfront.dianping.com, catdot.dianping.com, mlog.dianping.com, report.meituan.com, dreport.meituan.net, msp.meituan.com, market-fin.meituan.com, mgm.meituan.com, npay.meituan.com, cem.meituan.com, sessions.bugsnag.com, apimobile.meituan.com, mt-personalcenter.meituan.com, p0.meituan.net, p1.meituan.net, p2.meituan.net
