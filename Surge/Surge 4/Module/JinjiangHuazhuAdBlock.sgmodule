@@ -1,0 +1,10 @@
+#!name = 锦江荟广告拦截
+#!desc = 拦截锦江荟开屏广告(adLabel/getAdList)与首页弹窗广告(sensors-ma popup_configs)；仅覆盖2026-07-21实测确认的两个广告位，华住会待补测
+#!category = 广告拦截
+
+[MITM]
+hostname = %APPEND% hwy-gapi.bestwehotel.com, sensors-ma.bestwehotel.com
+
+[URL Rewrite]
+^https:\/\/hwy-gapi\.bestwehotel\.com\/message\/adLabel\/v2\/getAdList - reject-dict
+^https:\/\/sensors-ma\.bestwehotel\.com\/api\/v2\/sfo\/user_popup_configs - reject-dict
