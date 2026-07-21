@@ -14,12 +14,10 @@ DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 ^https?:\/\/m5-zb\.amap\.com\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/ai\.amap\.com\/ data-type=text data="" status-code=200 header="Content-Type:text/event-stream"
 ^https?:\/\/sns\.amap\.com\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
-# —— 图源静默：返回 1x1 透明 GIF，不留破图占位 ——
-^https?:\/\/aos-comment\.amap\.com\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
+# —— 图源静默：返回 1x1 透明 GIF（仅广告/车标/虚拟资产；POI 实拍图与用户评论图已放行）——
 ^https?:\/\/optimus-ads\.amap\.com\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 ^https?:\/\/popular-car\.amap\.com\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 ^https?:\/\/vassets\.amap\.com\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
-^https?:\/\/store\.is\.autonavi\.com\/(?:showpic|query_pic) data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 
 # —— 高德快报 / 本地头条 新闻流 ——
 ^https:\/\/center\.amap\.com\/ws\/amc\/server\/conv\/raise_list data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
