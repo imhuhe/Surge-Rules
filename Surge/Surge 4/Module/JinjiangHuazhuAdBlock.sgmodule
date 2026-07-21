@@ -7,4 +7,4 @@ hostname = %APPEND% hwy-gapi.bestwehotel.com, sensors-ma.bestwehotel.com
 
 [Map Local]
 ^https:\/\/hwy-gapi\.bestwehotel\.com\/message\/adLabel\/v2\/getAdList data-type=text data="{\"code\":\"0\",\"msg\":null,\"result\":null}" status-code=200
-^https:\/\/sensors-ma\.bestwehotel\.com\/api\/v2\/sfo\/user_popup_configs data-type=text data="{\"popup_plans\":[]}" status-code=200
+^https:\/\/sensors-ma\.bestwehotel\.com\/api\/v2\/sfo\/user_popup_configs data-type=text data="{\"min_sdk_version_required\":\"0.1.0\",\"popup_interval_global\":{\"value\":0,\"unit\":\"SECOND\",\"natural\":false},\"config_pull_interval_ms\":600000,\"popup_plans\":[]}" status-code=200
