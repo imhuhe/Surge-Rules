@@ -119,7 +119,6 @@ DOMAIN-SUFFIX,springsunday.net
 DOMAIN-SUFFIX,tjupt.org
 DOMAIN-SUFFIX,totheglory.im
 
-DOMAIN-SUFFIX,smtp
 URL-REGEX,(Subject|HELO|SMTP)
 
 DOMAIN,uplaypc-s-ubisoft.cdn.ubi.com

@@ -85,14 +85,12 @@ DOMAIN-SUFFIX,huobigroup.com
 DOMAIN-SUFFIX,huobitoken.com
 DOMAIN-SUFFIX,heco-scan.com
 DOMAIN-SUFFIX,hecoview.com
-DOMAIN-SUFFIX,hbfile.net
 DOMAIN-SUFFIX,huobi.br.com
 DOMAIN-SUFFIX,bitderiv.com
 DOMAIN-SUFFIX,hecochain.com
 DOMAIN-SUFFIX,huobi.ws
 DOMAIN-SUFFIX,huobi.ug
 DOMAIN-SUFFIX,huobi.co.ma
-DOMAIN-SUFFIX,huobi.br.com
 PROCESS-NAME,Huobi.exe
 DOMAIN-KEYWORD,huobi
 
@@ -111,7 +109,6 @@ DOMAIN-SUFFIX,bisq.io
 DOMAIN-SUFFIX,bisq.network
 DOMAIN-SUFFIX,bitsquare.io
     
-DOMAIN-SUFFIX,coinone.co.kr
 DOMAIN-SUFFIX,coinonecore.com
 DOMAIN-SUFFIX,coinonecorp.com
     
@@ -124,7 +121,6 @@ DOMAIN-SUFFIX,ethgasstation.info
 DOMAIN-SUFFIX,watchtheburn.com
 DOMAIN-SUFFIX,flashbots.net
 DOMAIN-SUFFIX,cryptofees.info
-DOMAIN-SUFFIX,etherscan.io
 DOMAIN-SUFFIX,ethereum-magicians.org
 DOMAIN-SUFFIX,vitalik.ca
 DOMAIN-SUFFIX,ethfans.org
@@ -167,7 +163,6 @@ DOMAIN-SUFFIX,loanscan.io
 DOMAIN-SUFFIX,defirate.com
 DOMAIN-SUFFIX,defipulse.com
 DOMAIN-SUFFIX,apy999.com
-DOMAIN-SUFFIX,defieye.io
 DOMAIN-SUFFIX,dextools.io
 DOMAIN-SUFFIX,tradingview.com
 DOMAIN-SUFFIX,dcabtc.com
@@ -184,7 +179,6 @@ DOMAIN-SUFFIX,cryptorank.io
 DOMAIN-SUFFIX,tradeblock.com
 DOMAIN-SUFFIX,nyctale.io
 DOMAIN-SUFFIX,dovemetrics.com
-DOMAIN-SUFFIX,cryptorank.io
 DOMAIN-SUFFIX,icodrops.com
 DOMAIN-SUFFIX,chainbroker.io
 DOMAIN-SUFFIX,crunchbase.com
@@ -242,7 +236,6 @@ DOMAIN-SUFFIX,bloks.io
 DOMAIN-SUFFIX,lightning.engineering
 DOMAIN-SUFFIX,lightning.community
 DOMAIN-SUFFIX,acinq.co
-DOMAIN-SUFFIX,1ml.com
 
 DOMAIN-SUFFIX,tokenpocket.pro
 DOMAIN-SUFFIX,token.im
