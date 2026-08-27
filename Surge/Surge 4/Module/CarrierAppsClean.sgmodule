@@ -1,51 +1,104 @@
 #!name = 运营商 App 净化（移动 / 联通）
-#!desc = 干掉中国移动、中国联通 App 的开屏广告与首页广告位。开屏部分基于 QingRex/LoonKissSurge 与墨鱼规则整合重制，2026-08-28 建。⚠️ 首页牛皮癣与各省分公司接口尚未抓包补全，位置权限弹窗属本地 UI，网络层拦不掉——见文末说明。
+#!desc = 中国移动 App（leadeon）与中国联通 App 去开屏、去营销弹窗、砍埋点。2026-08-28 基于重庆移动真实抓包（264 请求）重制。实测基线：一次冷启动+首页停留 上行 241KB／下行 2.09MB，其中埋点上报占上行 40%、单个"巴渝卡"营销弹窗页占下行 36%。实测拦下 下行 881KB／上行 106KB。⚠️ 移动核心业务接口响应体全程加密，首页运营位无法精确净化，只能整条拦——详见文末。
 #!category = 广告拦截
 
-# ══════════════════════════════════════════
-#  中国联通  m.client.10010.com
-# ══════════════════════════════════════════
 # 联通 App 走非标准 HTTP 引擎，不加这行 MITM 会静默失效
 [General]
 force-http-engine-hosts = %APPEND% m.client.10010.com
 
 [Map Local]
-# —— 联通：开屏广告 ——
-# accountListData.htm 同时下发账户数据与开屏广告，不能整条返空，
-# 只能按原结构把 startup_adv 置空，保住 respCode 与 imgIndex
-^https?:\/\/m\.client\.10010\.com\/mobileService\/customer\/accountListData\.htm data-type=text data="{\"imgIndex\":\"0\",\"adv\":{\"startup_adv\":{\"advCntList\":[],\"buttonList\":[]}},\"respCode\":\"0000\"}" status-code=200 header="Content-Type:application/json"
+# ══════════════════════════════════════════════════════════
+#  中国移动 leadeon —— 开屏与弹窗
+#  这些接口响应体是 AES 密文，返明文 JSON 有解密报错风险，
+#  统一返 200 + 空 body，让 App 走"无数据"分支
+# ══════════════════════════════════════════════════════════
+# 开屏广告（全国统一，已实测：拦掉后 App 启动与后续请求全部正常）
+^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/init\/startInit data-type=text data="" status-code=200 header="Content-Type:application/json"
 
-# —— 联通：其余纯广告接口，整条返空 ——
+# 弹窗控制四件套：悬浮位 / toast 弹窗页 / toast 规则 / 退出挽留弹窗
+# 「升档巴渝卡限时惊喜福利」这类全屏营销弹层由它们下发，治本在这里
+^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DA\/liveSuspension\/getPageCode data-type=text data="" status-code=200 header="Content-Type:application/json"
+^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DH\/toast\/august\/getPages data-type=text data="" status-code=200 header="Content-Type:application/json"
+^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/toast\/getToastRule data-type=text data="" status-code=200 header="Content-Type:application/json"
+^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/detainment\/august\/getPages data-type=text data="" status-code=200 header="Content-Type:application/json"
+
+# 营销服务位
+^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/newMarketService\/getNewMarket data-type=text data="" status-code=200 header="Content-Type:application/json"
+
+# ══════════════════════════════════════════════════════════
+#  重庆移动 H5 营销页（明文，兜底：万一弹窗容器还是被拉起来，
+#  至少不下那 756KB 素材）
+#  ⚠️ 只拦 /mapp/activities/ 一个路径。wap.cq.10086.cn 同时承载
+#     登录 SSO、话费查询等正常业务，绝不能整域拦。
+# ══════════════════════════════════════════════════════════
+^https?:\/\/wap\.cq\.10086\.cn\/mapp\/activities\/ data-type=text data="" status-code=200 header="Content-Type:text/html"
+
+# ══════════════════════════════════════════════════════════
+#  端侧个性化推荐引擎（外层明文、data 密文）
+#  下发推荐模型、策略、实验分组、推断规则，本次下行 85KB。
+#  砍掉它 App 就没有端侧模型可用于精准投放。
+#  ⚠️ 未长期实测，若首页出现异常先注释这一段
+# ══════════════════════════════════════════════════════════
+^https?:\/\/h\.app\.coc\.10086\.cn\/ngpsie\/psieappaiddsdkserver\/ data-type=text data="{\"code\":\"000000\",\"msg\":\"操作成功\",\"info\":null,\"data\":null}" status-code=200 header="Content-Type:application/json"
+
+# ══════════════════════════════════════════════════════════
+#  埋点与上报 —— 纯上行，本次占全部上行流量的 40%，砍掉零风险
+# ══════════════════════════════════════════════════════════
+# 极光私有部署埋点：27 次，34KB 上行，全场最大单一上报源
+^https?:\/\/jiguang\.coc\.10086\.cn\/v3\/projects\/[^\/]+\/collect data-type=text data="{\"result\":\"0\",\"msg\":\"ok\"}" status-code=200 header="Content-Type:application/json"
+# APM 性能与异常上报：logReport / logOpenEndCapability / exceptionOrTake / footmark
+^https?:\/\/apm\.app\.coc\.10086\.cn\/ data-type=text data="" status-code=200 header="Content-Type:application/json"
+# 加密行为上报
+^https?:\/\/client\.app\.coc\.10086\.cn\/cache_server\/api\/cache\/encrypt\/reportV2 data-type=text data="" status-code=200 header="Content-Type:application/json"
+^https?:\/\/h\.app\.coc\.10086\.cn\/ngpsie\/psieipuudp\/gather\/newSendLogForAES data-type=text data="" status-code=200 header="Content-Type:application/json"
+^https?:\/\/h\.app\.coc\.10086\.cn\/ngpsie\/psieappaidcsdkserver\/dataReported\/ data-type=text data="" status-code=200 header="Content-Type:application/json"
+# 用户画像上报（cmos/profile，out 远大于 in）
+^https?:\/\/mtm\.online-cmcc\.cn\/cmos\/profile data-type=text data="" status-code=200 header="Content-Type:application/json"
+# 重庆端埋点与 Webtrends
+^https?:\/\/wap\.cq\.10086\.cn\/collector\/terminal\.api data-type=text data="" status-code=200 header="Content-Type:application/json"
+^https?:\/\/service\.cq\.10086\.cn\/nwebtrends\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
+# —— 可选：GrowingIO / pagecode 埋点 SDK 本体（约 164KB 下行）——
+# 默认不拦。上面已经把它们的上报端点（collector/terminal.api、nwebtrends）
+# 全部堵死，SDK 加载了也发不出去，收益只剩省那 164KB（还有浏览器缓存）。
+# 而返空 JS 会让页面里 gdp.track(...) 这类调用抛 undefined，有中断后续
+# JS 执行的风险。想省这点流量再取消注释，取消后重点验证 H5 页面是否还正常。
+# ^https?:\/\/wap\.cq\.10086\.cn\/(?:agent\/pagecode|mapp\/component\/js\/gdp-full|h5\/component\/eccommon\/(?:gdp-full|pagecode-agent)|mapp\/pagemobile\/mobilejs\/common\/cq_sdc_load) data-type=text data="" status-code=200 header="Content-Type:application/javascript"
+
+# ══════════════════════════════════════════════════════════
+#  第三方数据 SDK：MobTech（zztfly 与 share.mob.com 同一 appkey）
+# ══════════════════════════════════════════════════════════
+^https?:\/\/(?:upc|cfgc)\.zztfly\.com\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
+^https?:\/\/da\.mmarket\.com\/udata_v5\/ data-type=text data="" status-code=200 header="Content-Type:application/json"
+
+# ══════════════════════════════════════════════════════════
+#  中国联通 m.client.10010.com（湖北宜昌走全国统一域名）
+#  未抓包验证，规则来自 QingRex/LoonKissSurge 与墨鱼规则
+# ══════════════════════════════════════════════════════════
+# accountListData.htm 同时下发账户数据与开屏广告，不能整条返空，
+# 按原结构把 startup_adv 置空，保住 respCode 与 imgIndex
+^https?:\/\/m\.client\.10010\.com\/mobileService\/customer\/accountListData\.htm data-type=text data="{\"imgIndex\":\"0\",\"adv\":{\"startup_adv\":{\"advCntList\":[],\"buttonList\":[]}},\"respCode\":\"0000\"}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/m\.client\.10010\.com\/mobileService\/(?:activity|customer)\/(?:get_client_adv|get_startadv) data-type=text data="{\"respCode\":\"0000\"}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/m\.client\.10010\.com\/uniAdmsInterface\/(?:getHomePageAd|getWelcomeAd) data-type=text data="{\"respCode\":\"0000\"}" status-code=200 header="Content-Type:application/json"
 
-# ══════════════════════════════════════════
-#  中国移动  *.10086.cn
-# ══════════════════════════════════════════
-# —— 移动：全国统一开屏（主力，各省通用）——
-# ⚠️ startInit 是"启动初始化"接口，公开规则流传已久判定安全，但本机未实测。
-#    若装上后 App 首页异常/白屏，第一个怀疑对象就是这条。
-^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/init\/startInit data-type=text data="{\"code\":\"0\",\"data\":{}}" status-code=200 header="Content-Type:application/json"
-
-# —— 移动：各省分公司开屏（只覆盖已知四省，其余需抓包补）——
-^https?:\/\/wap\.js\.10086\.cn\/jsmccClient\/cd\/market_content\/api\/v\d\/market_content\.page\.query data-type=text data="{\"code\":\"0\",\"data\":{}}" status-code=200 header="Content-Type:application/json"
-^https?:\/\/m\.sd\.10086\.cn\/zapi\/app_common\/homeWelcome\/welcome\.do data-type=text data="{\"code\":\"0\",\"data\":{}}" status-code=200 header="Content-Type:application/json"
-^https?:\/\/gx\.10086\.cn\/zt-portal\/gxhzg\/portal\/app\/api\/v data-type=text data="{\"code\":\"0\",\"data\":{}}" status-code=200 header="Content-Type:application/json"
-^https?:\/\/gd\.10086\.cn\/gmccapp\/serv\/\?servicename=GMCCAPP_704_002_001_001 data-type=text data="{\"code\":\"0\",\"data\":{}}" status-code=200 header="Content-Type:application/json"
-
-# —— 移动：周边产品广告 ——
-^https?:\/\/ad\.mcloud\.139\.com\/ data-type=text data="{\"code\":\"0\",\"data\":{}}" status-code=200 header="Content-Type:application/json"
-^https?:\/\/smsrebuild1\.mail\.10086\.cn\/together\/s data-type=text data="{\"code\":\"0\",\"data\":{}}" status-code=200 header="Content-Type:application/json"
-
 [MITM]
-hostname = %APPEND% m.client.10010.com, client.app.coc.10086.cn, wap.js.10086.cn, m.sd.10086.cn, gx.10086.cn, gd.10086.cn, ad.mcloud.139.com, smsrebuild1.mail.10086.cn
+hostname = %APPEND% client.app.coc.10086.cn, h.app.coc.10086.cn, apm.app.coc.10086.cn, jiguang.coc.10086.cn, wap.cq.10086.cn, service.cq.10086.cn, mtm.online-cmcc.cn, upc.zztfly.com, cfgc.zztfly.com, da.mmarket.com, m.client.10010.com
 
-# ══════════════════════════════════════════
-#  本模块拦不掉的三类，别指望
-# ══════════════════════════════════════════
-# 1. 位置权限弹窗：App 本地代码弹的（系统 alert 或自绘说明页），不发网络请求，
-#    Surge 够不着。只能在 iOS 设置 → 隐私与安全性 → 定位服务 → 该 App → 永不。
-# 2. 首页运营位/牛皮癣：联通有 queryIndexWaterfall、queryIndexExclusiveOffers
-#    两个接口是广告与内容混发，要用 Body Rewrite 精确删字段，必须先抓包看真实
-#    结构。上游那份用 walk() 无差别清空所有数组，会连正常内容一起清掉，不采用。
-# 3. 各省分公司自有开屏：域名形如 <省缩写>.10086.cn，路径各省不同，无法通配。
+# ══════════════════════════════════════════════════════════
+#  本模块拦不掉的，别指望
+# ══════════════════════════════════════════════════════════
+# 1. 位置权限弹窗：App 本地代码弹的，不发网络请求，代理层够不着。
+#    只能走 设置 → 隐私与安全性 → 定位服务 → 该 App → 永不。
+#
+# 2. 首页运营位的"精确"净化：移动 App 的 biz-orange/* 接口响应体
+#    全部是 AES 密文（本次 82 条密文 vs 33 条明文，明文全是 SDK 与
+#    第三方，没有一条业务接口）。多个响应共享 21 字符固定前缀，说明
+#    ECB 或固定 IV。密文意味着 Body Rewrite 的 jq 完全用不了——广告
+#    与内容混在同一响应里时，只能整条拦或整条放行，没有中间态。
+#    首页 getTopAreaList（136KB）与 aggregationData（43KB）就属于这类，
+#    整条拦会把套餐余量、话费这些一起干掉，因此放行。
+#    要精确净化必须逆向 App 拿密钥、写 Surge 脚本解密-改写-重加密，
+#    投入产出比不成立。
+#
+# 3. 英文版那套干净界面无法"借"给中文版：英文版走的是完全独立的接口
+#    biz-orange/DN/englishEdition/getEnglishEditionData，不是同一接口的
+#    locale 参数差异，网络层没有切换点。
