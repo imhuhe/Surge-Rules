@@ -1,8 +1,12 @@
 DOMAIN-SUFFIX,fast.com
 
-USER-AGENT,SpeedTest*
-DOMAIN-KEYWORD,speedtest
+DOMAIN-SUFFIX,speed.cloudflare.com
+
 DOMAIN-SUFFIX,ooklaserver.net
 DOMAIN,speed.dler.io
+DOMAIN-SUFFIX,speedtest.co
+DOMAIN-SUFFIX,speedtest.net
+DOMAIN-SUFFIX,speedtestcustom.com
+USER-AGENT,SpeedTest*
 
-DOMAIN-SUFFIX,speed.cloudflare.com
+DOMAIN-KEYWORD,speedtest

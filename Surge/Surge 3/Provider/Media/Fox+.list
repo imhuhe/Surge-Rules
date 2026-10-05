@@ -1,4 +1,5 @@
-USER-AGENT,FOXPlus*
-DOMAIN-SUFFIX,akamaized.net
 DOMAIN-SUFFIX,foxplus.com
+USER-AGENT,FOXPlus*
+
+DOMAIN-SUFFIX,akamaized.net
 DOMAIN-SUFFIX,theplatform.com

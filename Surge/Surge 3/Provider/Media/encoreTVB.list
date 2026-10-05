@@ -1,4 +1,4 @@
-USER-AGENT,encoreTVB*
-DOMAIN-SUFFIX,encoretvb.com
 DOMAIN,content.jwplatform.com
+DOMAIN-SUFFIX,encoretvb.com
 DOMAIN,videos-f.jwpsrv.com
+USER-AGENT,encoreTVB*
