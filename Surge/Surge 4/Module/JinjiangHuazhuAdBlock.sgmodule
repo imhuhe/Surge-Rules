@@ -1,5 +1,5 @@
 #!name = 锦江荟广告拦截
-#!desc = 拦截锦江荟开屏广告(adLabel/getAdList)+首页H5营销活动页(h5.bestwehotel.com/view，含好券天天领等弹窗)；sensors-ma popup_configs规则保留作兜底；仅覆盖2026-07-21实测确认的广告位，华住会待补测
+#!desc = 开屏广告与首页营销页
 #!category = 广告拦截
 
 [MITM]

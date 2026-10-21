@@ -1,5 +1,5 @@
 #!name = 高德地图净化
-#!desc = 只保留地图本身。第二轮加强：打车/AI对话/探索三个 tab 的后端整域封杀，我的页商城车标皮肤虚拟资产全清，UGC实拍图不加载。基于 QingRex/LoonKissSurge 高德地图去广告(2026-02-22)重制，2026-07-21 实测抓包补全。注意：底部 tab 按钮本身是原生UI删不掉，点进去是空白页。
+#!desc = 只留地图本体；打车、AI、探索 tab 已封
 #!category = 广告拦截
 #!openUrl = https://apps.apple.com/app/id461703208
 
@@ -10,23 +10,23 @@ DOMAIN,free-aos-cdn-image.amap.com,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 
 [Map Local]
-# —— 整域静默：返回 200 空数据，让页面安静地什么都不显示（不走 reject，避免"网络不畅"报错）——
+# 整域静默：返回 200 空数据（不用 reject，免得报网络不畅）
 ^https?:\/\/m5-zb\.amap\.com\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/ai\.amap\.com\/ data-type=text data="" status-code=200 header="Content-Type:text/event-stream"
 ^https?:\/\/sns\.amap\.com\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
-# —— 图源静默：返回 1x1 透明 GIF（仅广告/车标/虚拟资产；POI 实拍图与用户评论图已放行）——
+# 图源静默：返回 1x1 透明 GIF
 ^https?:\/\/optimus-ads\.amap\.com\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 ^https?:\/\/popular-car\.amap\.com\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 ^https?:\/\/vassets\.amap\.com\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 
-# —— 高德快报 / 本地头条 新闻流 ——
+# 高德快报新闻流
 ^https:\/\/center\.amap\.com\/ws\/amc\/server\/conv\/raise_list data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/msgbox\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— 开屏广告 ——
+# 开屏广告
 ^https:\/\/m5\.amap\.com\/ws\/valueadded\/alimama\/splash_screen data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— 首页：推广位、AI 快捷问答、热词、场景推荐 ——
+# 首页推广位、热词、场景推荐
 ^https:\/\/m5\.amap\.com\/ws\/promote\/main-page\/assets data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/faas\/amap-navigation\/(?:main-page-assets|main-page-aiqs|main-page-location|card-service-plan-home|ridewalk-end-fc|usr-profile-fc\/homeV2) data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/ai\.amap\.com\/v1\/ai_rec\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
@@ -36,15 +36,15 @@ DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 ^https:\/\/m5\.amap\.com\/ws\/valueadded\/weather\/v2 data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/oss\.amap\.com\/ws\/banner\/lists\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— 探索 tab：信息流、内容中心、达人推荐、AI 内容卡 ——
+# 探索 tab
 ^https:\/\/m5\.amap\.com\/ws\/info_bff\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/aos\/spot\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/(?:ai\/content|middle_state\/) data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— AI 对话 tab ——
+# AI 对话 tab
 ^https:\/\/m5\.amap\.com\/ws\/c3(?:frontend)?\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— 我的 tab：商城、车标/皮肤/语音包、虚拟资产、数字人、社交 ——
+# 我的 tab：商城、车标皮肤、虚拟资产
 ^https:\/\/m5\.amap\.com\/ws\/shield\/dsp\/profile\/index\/nodefaasv3 data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/user\/(?:theme|goods|vassets|shopping_mall|relation|fatigue|facade)\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/aos\/personal\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
@@ -52,7 +52,7 @@ DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 ^https:\/\/center\.amap\.com\/ws\/(?:aos\/carlogo|pb\/account\/check\/theme)\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/aos\/main\/page\/product\/list data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— 任务 / 签到 / 福袋 等游戏化 ——
+# 任务 / 签到 / 福袋 等游戏化
 ^https:\/\/m5\.amap\.com\/ws\/faas\/amap-navigation\/task-platform\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/activity\/task\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
@@ -60,11 +60,11 @@ DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 ^https:\/\/(?:m5|center)\.amap\.com\/ws\/(?:message\/notice\/list|msgbox\/pull_mp) data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/sns\.amap\.com\/ws\/msgbox\/pull_mp data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— 打车 tab（m5-zb 已整域 REJECT，此处仅补 m5/info 上的打车导流位）——
+# 打车 tab（m5-zb 整域已清空，这里补 m5/info 上的导流位）
 ^https:\/\/info\.amap\.com\/ws\/shield\/galaxy\/data data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/(?:galaxy|valueadded\/private_car)\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— 搜索 / POI 页推广 ——
+# 搜索 / POI 页推广
 ^https:\/\/m5\.amap\.com\/ws\/shield\/search_poi\/tips_adv data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/process\/orderList data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/mapapi\/hint_text\/offline_data data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
