@@ -77,6 +77,7 @@ DOMAIN-SUFFIX,jasper.ai
 DOMAIN-SUFFIX,jetbrains.ai
 DOMAIN-SUFFIX,meta.ai
 DOMAIN-SUFFIX,meta.com
+DOMAIN-SUFFIX,muse.ai
 DOMAIN-SUFFIX,mistral.ai
 DOMAIN-SUFFIX,openart.ai
 DOMAIN-SUFFIX,openrouter.ai
@@ -144,8 +145,8 @@ DOMAIN-SUFFIX,cursor.com
 DOMAIN-SUFFIX,cursorapi.com
 DOMAIN-SUFFIX,cursorvm.com
 DOMAIN,accounts.spacex.ai
-DOMAIN,auth.grokipedia.com
-DOMAIN,auth.grokusercontent.com
+DOMAIN-SUFFIX,grokipedia.com
+DOMAIN-SUFFIX,grokusercontent.com
 DOMAIN-SUFFIX,diabrowser.com
 DOMAIN-SUFFIX,udify.app
 DOMAIN,copilot-proxy.githubusercontent.com
