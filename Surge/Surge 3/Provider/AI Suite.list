@@ -35,6 +35,7 @@ DOMAIN-SUFFIX,anthropic.com
 DOMAIN-SUFFIX,claude.ai
 DOMAIN-SUFFIX,claude.com
 DOMAIN-SUFFIX,claudeusercontent.com
+DOMAIN,o1158394.ingest.us.sentry.io
 DOMAIN-SUFFIX,cerebras.ai
 DOMAIN-SUFFIX,chorus.sh
 DOMAIN,gateway.ai.cloudflare.com
