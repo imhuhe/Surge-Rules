@@ -10,7 +10,7 @@
   }
 
   const [err, resp] = await new Promise(r =>
-    $httpClient.get({ url, headers: { 'User-Agent': 'Mozilla/5.0' }, timeout: 10 }, (e, res) => r([e, res]))
+    $httpClient.get({ url, timeout: 10 }, (e, res) => r([e, res]))
   )
 
   if (err || resp.status !== 200) {
