@@ -1,0 +1,12 @@
+#!name = Spark Mail 会员解锁
+#!desc = 改写 RevenueCat 订阅响应，解锁 Spark Premium
+# 本仓自建副本，与上游分离，可自行改动。
+# 源模块：https://yfamilys.com/module/spark.module（作者 yqc007）
+# 源脚本：yqc007/QuantumultX 的 SparkMailProCrack.js（作者 Passer_by_yun，2022-11-18，标注适配 Spark 3.0.6）
+# 同步于 2026-11-10；脚本已去混淆、收窄作用面，改动与理由见 Script/SparkMail.response.js 头注释
+
+[Script]
+Spark.Mail = type=http-response,pattern=^https?:\/\/api\.revenuecat\.com\/v1\/(receipts|subscribers\/[^\/\?]+)(\?.*)?$,requires-body=1,max-size=-1,script-path=https://cdn.jsdelivr.net/gh/imhuhe/Surge-Rules@main/Surge/Surge%204/Script/SparkMail.response.js
+
+[MITM]
+hostname = %APPEND% api.revenuecat.com
