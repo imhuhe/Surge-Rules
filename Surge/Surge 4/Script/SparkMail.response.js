@@ -13,7 +13,10 @@
  *   3. 真已付费（premium 未到期）或响应不是 JSON 时原样放行，不覆盖真实状态；
  *      非订阅型购买（non_subscriptions / other_purchases）保留服务端原值
  *   4. original_app_user_id 优先取请求 URL 里的真实用户 id，避免 SDK 判定用户身份不一致
- *   5. 可选白名单 SPARK_API_KEY：填上 Spark 的 RevenueCat 公钥后只改写 Spark 自己的请求
+ *   5. 响应里带的是别的 App 的真实订阅（产品 id 不以 spark_ 开头）就放行，
+ *      不拿假数据顶掉别的 App 的已购状态；没有产品 id 的空响应仍按 Spark 处理
+ *   6. 可选白名单 SPARK_API_KEY：填上 Spark 的 RevenueCat 公钥后只改写 Spark 自己的请求。
+ *      取不到 Authorization 头时不拦（宁可能用，不静默失效）
  */
 const SPARK_API_KEY = ""; // 形如 "appl_xxx"；留空＝api.revenuecat.com 下全部改写
 const FAKE_EXPIRES = "2077-07-07T00:00:00Z";
@@ -80,7 +83,7 @@ function buildBody(real) {
 (function main() {
   var headers = ($request && $request.headers) || {};
   var auth = String(headers.Authorization || headers.authorization || "");
-  if (SPARK_API_KEY && auth.indexOf(SPARK_API_KEY) < 0) return $done({});
+  if (SPARK_API_KEY && auth && auth.indexOf(SPARK_API_KEY) < 0) return $done({});
 
   var obj;
   try {
@@ -94,6 +97,11 @@ function buildBody(real) {
   if (premium && premium.expires_date && Date.parse(premium.expires_date) > Date.now()) {
     return $done({});
   }
+
+  var subs = real.subscriptions || {};
+  var keys = Object.keys(subs);
+  var isSpark = keys.some(function (k) { return k.indexOf("spark_") === 0; });
+  if (keys.length && !isSpark) return $done({});
 
   $done({ body: JSON.stringify(buildBody(real)) });
 })();
