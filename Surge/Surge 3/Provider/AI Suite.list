@@ -38,6 +38,9 @@ DOMAIN-SUFFIX,claude.ai
 DOMAIN-SUFFIX,claude.com
 DOMAIN-SUFFIX,claudeusercontent.com
 DOMAIN-SUFFIX,claude.dev
+# Sift 反欺诈风控：Claude 登录时调用 api3.siftscience.com（iPhone 抓包实测）。不进来会落 FINAL 走香港，登录那一刻主站与风控两个出口不同国
+DOMAIN-SUFFIX,siftscience.com
+DOMAIN-SUFFIX,sift.com
 # Anthropic 官方公布的地址段（platform.claude.com/docs/en/api/ip-addresses）：兜住按 IP 直连。
 # 160.79.104.0/21 出站段包住入站 /23；153.61 那组入站 /22 不在出站 /20 里，两段都要写
 IP-CIDR,160.79.104.0/21,no-resolve
