@@ -1,0 +1,7 @@
+#!name=oix-helper-direct
+#!desc=oixCloud helper 自身流量一律直连，防止进它自己转发的节点成环。只用于装了 helper 的 Mac。
+#!system=mac
+# 两行对应 helper 的两种形态：单文件安装（oixcloud-external-proxy-program）与完整应用 oixCloud Helper.app（oixcloud-helper）。
+[Rule]
+PROCESS-NAME,oixcloud-external-proxy-program,DIRECT
+PROCESS-NAME,oixcloud-helper,DIRECT
