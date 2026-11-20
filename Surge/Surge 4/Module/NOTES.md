@@ -19,6 +19,13 @@
 ## 运营商 App 净化
 - 端侧推荐引擎规则未长期实测。中国移动 App 首页异常时，优先单独停用 psieappaiddsdkserver 映射，再复测首页。
 
+- 联通 App 的 m.client.10010.com 使用非标准 HTTP 引擎。MITM 规则依赖 force-http-engine-hosts 保留该主机。
+- 重庆移动的 GrowingIO 和 pagecode 拦截为默认关闭的试验。返回空 JavaScript 可能中断页面。仅在单独验收时，将以下规则加入模块的 Map Local 段。
+
+```
+^https?:\/\/wap\.cq\.10086\.cn\/(?:agent\/pagecode|mapp\/component\/js\/gdp-full|h5\/component\/eccommon\/(?:gdp-full|pagecode-agent)|mapp\/pagemobile\/mobilejs\/common\/cq_sdc_load) data-type=text data="" status-code=200 header="Content-Type:application/javascript"
+```
+
 本模块拦不掉的：
 1. 位置权限弹窗是 App 本地代码弹的，不发网络请求，代理层够不着。只能在 设置 → 隐私与安全性 → 定位服务 → 该 App 里选「永不」。
 2. 首页运营位无法精确净化。移动 App 的 biz-orange/* 接口响应体全是 AES 密文（82 条密文对 33 条明文，明文全是 SDK 与第三方），Body Rewrite 的 jq 用不了。广告与内容在同一响应里，只能整条拦或整条放。首页 getTopAreaList（136KB）与 aggregationData（43KB）属于这类，整条拦会连套餐余量、话费一起干掉，所以放行。精确净化要逆向拿密钥、写脚本解密改写再加密，投入产出比不成立。
