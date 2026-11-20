@@ -4,6 +4,7 @@
 #!arguments-desc=- 屏蔽参数：[true, false] \n- 翻译参数：[语言代码, off] \n\n1. 语言代码遵循 Google Translate Languages Codes, 当填入 off 时关闭翻译\n2. 开启调试模式用于输出更多日志
 # 本仓自建副本，与上游分离，可自行改动。源：Maasea/sgmodule（Apache-2.0）
 # 上游：https://github.com/Maasea/sgmodule/blob/master/YouTube.Enhance.sgmodule
+# 本地改动：三个 script-path 指向本仓；屏蔽Shorts按钮默认值改为 true
 
 
 [Script]

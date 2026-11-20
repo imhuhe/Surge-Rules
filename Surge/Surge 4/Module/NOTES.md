@@ -8,6 +8,8 @@
 - 脚本 `Script/Amap_remove_ads.js`：原 kelee.one 地址 2026-10-21 起 404，现用仓内副本（取自 GitHub 镜像，2026-03-09 版）。
 - 已知失效：公交 `bus/plan/integrate` 现为 nvg.amap.com 的 new_integrate，响应是 zstd 二进制，脚本处理不了；搜索联想 sug 路径已改为 `search_business/process/middleLayer/sug`。
 
+- 高德的登录接口应继续放行，包括 passport、center auth、sync 和一键登录。消息盒子或用户页规则扩大范围前，先回归登录。
+
 ## 美团净化
 - 美团每个 tab 都是真实交易入口，只清广告与埋点，不做整 tab 封杀。
 - 首页团购瀑布流：实测 9 张卡片里 6 张带曝光计费的广告信息，删卡片而不是整接口，分页字段不变。
@@ -15,6 +17,8 @@
 - 广告图源只让图消失，卡片骨架还在（空白块），API 层剔除见 Body Rewrite。
 
 ## 运营商 App 净化
+- 端侧推荐引擎规则未长期实测。中国移动 App 首页异常时，优先单独停用 psieappaiddsdkserver 映射，再复测首页。
+
 本模块拦不掉的：
 1. 位置权限弹窗是 App 本地代码弹的，不发网络请求，代理层够不着。只能在 设置 → 隐私与安全性 → 定位服务 → 该 App 里选「永不」。
 2. 首页运营位无法精确净化。移动 App 的 biz-orange/* 接口响应体全是 AES 密文（82 条密文对 33 条明文，明文全是 SDK 与第三方），Body Rewrite 的 jq 用不了。广告与内容在同一响应里，只能整条拦或整条放。首页 getTopAreaList（136KB）与 aggregationData（43KB）属于这类，整条拦会连套餐余量、话费一起干掉，所以放行。精确净化要逆向拿密钥、写脚本解密改写再加密，投入产出比不成立。
