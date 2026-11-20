@@ -4,42 +4,31 @@
 #!openUrl = https://apps.apple.com/app/id423084029
 
 [Map Local]
-# 埋点上报整域静默（*.d.meituan.net 均为 POST 上报）
 ^https?:\/\/[\w-]+\.d\.meituan\.net\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 美团 LX 统计 SDK
 ^https?:\/\/lx0?\.meituan\.(?:com|net)\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 点评 CAT 监控埋点
 ^https?:\/\/cat(?:front|dot)\.dianping\.com\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/mlog\.dianping\.com\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 其余上报通道
 ^https:\/\/msp\.meituan\.com\/api\/affogato data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/d?report\.meituan\.(?:com|net)\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/sessions\.bugsnag\.com\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
-# 蒲公英(pgy)广告平台：曝光回调与竞价
 ^https:\/\/market-fin\.meituan\.com\/ad\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/mgm\.meituan\.com\/marketing\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 钱包底部横幅与弹窗频控上报
 ^https:\/\/npay\.meituan\.com\/(?:conch\/wallet\/bottom-banner|api\/flow-distribute\/frequency\/report) data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 骚扰问卷
 ^https:\/\/cem\.meituan\.com\/survey\/ data-type=text data="{\"code\":0,\"msg\":\"\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 广告图源：返回 1x1 透明 GIF（只覆盖广告专用路径）
 ^https?:\/\/p\d\.meituan\.net\/adunion\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 ^https?:\/\/p\d\.meituan\.net\/recommendimage\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 
 [Body Rewrite]
-# 首页团购瀑布流：剔除付费广告卡片
 http-response-jq ^https:\/\/apimobile\.meituan\.com\/group\/v4\/poi\/tuan\/list\/ '(.gathers[]?.items) |= map(select(.adInfo.type != "default"))'
 
-# 支付完成后的推荐弹窗
 http-response-jq ^https:\/\/apimobile\.meituan\.com\/group\/v1\/recommend\/unity\/recommends '.data = []'
 
-# 我的页工具区：整组清空
 http-response-jq ^https:\/\/mt-personalcenter\.meituan\.com\/secondPage\/tool '.data = []'
 
 [MITM]

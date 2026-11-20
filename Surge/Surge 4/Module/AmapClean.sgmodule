@@ -4,29 +4,23 @@
 #!openUrl = https://apps.apple.com/app/id461703208
 
 [Rule]
-# 纯广告素材域
 DOMAIN,amap-aos-info-nogw.amap.com,REJECT,extended-matching,pre-matching
 DOMAIN,free-aos-cdn-image.amap.com,REJECT,extended-matching,pre-matching
 DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 
 [Map Local]
-# 整域静默：返回 200 空数据（不用 reject，免得报网络不畅）
 ^https?:\/\/m5-zb\.amap\.com\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/ai\.amap\.com\/ data-type=text data="" status-code=200 header="Content-Type:text/event-stream"
 ^https?:\/\/sns\.amap\.com\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
-# 图源静默：返回 1x1 透明 GIF
 ^https?:\/\/optimus-ads\.amap\.com\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 ^https?:\/\/popular-car\.amap\.com\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 ^https?:\/\/vassets\.amap\.com\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
 
-# 高德快报新闻流
 ^https:\/\/center\.amap\.com\/ws\/amc\/server\/conv\/raise_list data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/msgbox\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 开屏广告
 ^https:\/\/m5\.amap\.com\/ws\/valueadded\/alimama\/splash_screen data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 首页推广位、热词、场景推荐
 ^https:\/\/m5\.amap\.com\/ws\/promote\/main-page\/assets data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/faas\/amap-navigation\/(?:main-page-assets|main-page-aiqs|main-page-location|card-service-plan-home|ridewalk-end-fc|usr-profile-fc\/homeV2) data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/ai\.amap\.com\/v1\/ai_rec\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
@@ -36,15 +30,12 @@ DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 ^https:\/\/m5\.amap\.com\/ws\/valueadded\/weather\/v2 data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/oss\.amap\.com\/ws\/banner\/lists\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 探索 tab
 ^https:\/\/m5\.amap\.com\/ws\/info_bff\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/aos\/spot\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/(?:ai\/content|middle_state\/) data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# AI 对话 tab
 ^https:\/\/m5\.amap\.com\/ws\/c3(?:frontend)?\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 我的 tab：商城、车标皮肤、虚拟资产
 ^https:\/\/m5\.amap\.com\/ws\/shield\/dsp\/profile\/index\/nodefaasv3 data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/user\/(?:theme|goods|vassets|shopping_mall|relation|fatigue|facade)\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/aos\/personal\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
@@ -52,24 +43,19 @@ DOMAIN-SUFFIX,v.smtcdns.com,REJECT,extended-matching,pre-matching
 ^https:\/\/center\.amap\.com\/ws\/(?:aos\/carlogo|pb\/account\/check\/theme)\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/aos\/main\/page\/product\/list data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 任务 / 签到 / 福袋 等游戏化
 ^https:\/\/m5\.amap\.com\/ws\/faas\/amap-navigation\/task-platform\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/activity\/task\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— 消息盒子（登录相关接口已全部放行：passport / center auth / sync / 一键登录）——
 ^https:\/\/(?:m5|center)\.amap\.com\/ws\/(?:message\/notice\/list|msgbox\/pull_mp) data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/sns\.amap\.com\/ws\/msgbox\/pull_mp data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 打车 tab（m5-zb 整域已清空，这里补 m5/info 上的导流位）
 ^https:\/\/info\.amap\.com\/ws\/shield\/galaxy\/data data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/(?:galaxy|valueadded\/private_car)\/ data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 搜索 / POI 页推广
 ^https:\/\/m5\.amap\.com\/ws\/shield\/search_poi\/tips_adv data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/shield\/search_business\/process\/orderList data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/mapapi\/hint_text\/offline_data data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# —— 遥测 / 埋点上报（不影响功能，纯上行日志）——
 ^https:\/\/awaken\.amap\.com\/ws\/h5_log data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5-x\.amap\.com\/+ws\/shield\/(?:alc\/collect|amapstream\/upload) data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"
 ^https:\/\/m5\.amap\.com\/ws\/user\/fatigue\/report data-type=text data="{\"code\":1,\"result\":\"true\",\"data\":null}" status-code=200 header="Content-Type:application/json"

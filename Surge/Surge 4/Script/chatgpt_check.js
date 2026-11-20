@@ -12,8 +12,6 @@ function get(url) {
 }
 
 ;(async () => {
-  // chat.openai.com 已 308 跳转到 chatgpt.com，旧脚本要 home===200 故永远误报 Unreachable。
-  // 改用 trace 判可达+地区；封锁用 compliance 接口的 unsupported_country 标记。
   const [trace, comp] = await Promise.all([
     get('https://chatgpt.com/cdn-cgi/trace'),
     get('https://api.openai.com/compliance/cookie_requirements'),

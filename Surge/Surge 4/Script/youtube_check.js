@@ -17,8 +17,6 @@ function flag(cc) {
 
   const cc = (body.match(/"GL"\s*:\s*"([A-Z]{2})"/) || [])[1] || ''
   const region = cc ? ` | Region: ${flag(cc)} ${cc}` : ''
-  // 旧脚本找 MONTHLY_PLAN/premiumFeature 等 token，YT 改版后已消失故永远误报 Unavailable。
-  // 改为负向判定：页面未提示“本地区不可用”即视为可用。
   const unavailable = /Premium is(?:n't| not) available|not available in your (?:country|region)/i.test(body)
 
   if (resp.status === 200 && !unavailable) {

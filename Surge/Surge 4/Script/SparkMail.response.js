@@ -18,7 +18,7 @@
  *   6. 可选白名单 SPARK_API_KEY：填上 Spark 的 RevenueCat 公钥后只改写 Spark 自己的请求。
  *      取不到 Authorization 头时不拦（宁可能用，不静默失效）
  */
-const SPARK_API_KEY = ""; // 形如 "appl_xxx"；留空＝api.revenuecat.com 下全部改写
+const SPARK_API_KEY = "";
 const FAKE_EXPIRES = "2077-07-07T00:00:00Z";
 const FAKE_PRODUCT = "spark_5999_1y_1w0";
 const FAKE_PURCHASE = "2022-11-18T04:00:12Z";

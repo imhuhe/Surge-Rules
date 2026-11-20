@@ -19,3 +19,10 @@
 1. 位置权限弹窗是 App 本地代码弹的，不发网络请求，代理层够不着。只能在 设置 → 隐私与安全性 → 定位服务 → 该 App 里选「永不」。
 2. 首页运营位无法精确净化。移动 App 的 biz-orange/* 接口响应体全是 AES 密文（82 条密文对 33 条明文，明文全是 SDK 与第三方），Body Rewrite 的 jq 用不了。广告与内容在同一响应里，只能整条拦或整条放。首页 getTopAreaList（136KB）与 aggregationData（43KB）属于这类，整条拦会连套餐余量、话费一起干掉，所以放行。精确净化要逆向拿密钥、写脚本解密改写再加密，投入产出比不成立。
 3. 英文版的干净界面借不到：它走独立接口 biz-orange/DN/englishEdition/getEnglishEditionData，不是同一接口的 locale 参数差异。
+
+## 规则来源与维护依据
+
+- AI Suite 将 iPhone 实测在 Claude 登录阶段请求的 `api3.siftscience.com` 与 AI 流量放在同一组，保持出口一致。
+- AI Suite 的 Anthropic 地址段参考 [Anthropic 官方 IP 清单](https://platform.claude.com/docs/en/api/ip-addresses)。`160.79.104.0/21` 已覆盖其中的入站 `/23`。另一组 `153.61` 的入站 `/22` 位于出站 `/20` 之外，因此保留两项。
+- Bilibili 列表保留原来的香港、澳门、台湾相关规则。删除的地区说明可从 Git 历史查阅。
+- 高德 `Amap_remove_ads.js` 维持现有镜像字节和原作者信息。RuCu6 原始链接当前不可访问，许可范围尚未核实。

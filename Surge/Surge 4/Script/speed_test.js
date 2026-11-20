@@ -56,8 +56,6 @@ function tryRender() {
 }
 
 ;(function dl() {
-  // 先拉 1MB 探路、超时 15s：烂节点上也能快速出数不再长挂；
-  // 只有探到 >30Mbps 才升级到 10MB 取更准的值。
   const B1 = 1 * 1024 * 1024, t0 = Date.now()
   $httpClient.get({ url: CF(B1), timeout: 15, 'binary-mode': true }, (e) => {
     if (e) { dlDone = true; tryRender(); return }

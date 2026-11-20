@@ -2,54 +2,35 @@
 #!desc = 移动、联通 App：去开屏、弹窗、埋点
 #!category = 广告拦截
 
-# 联通走非标准 HTTP 引擎，需此项 MITM 才生效
 [General]
 force-http-engine-hosts = %APPEND% m.client.10010.com
 
 [Map Local]
-# 移动：开屏与弹窗（响应为密文，返 200 空 body）
-# 开屏广告
 ^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/init\/startInit data-type=text data="" status-code=200 header="Content-Type:application/json"
 
-# 弹窗控制（悬浮位、toast、退出挽留）
 ^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DA\/liveSuspension\/getPageCode data-type=text data="" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DH\/toast\/august\/getPages data-type=text data="" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/toast\/getToastRule data-type=text data="" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/detainment\/august\/getPages data-type=text data="" status-code=200 header="Content-Type:application/json"
 
-# 营销服务位
 ^https?:\/\/client\.app\.coc\.10086\.cn\/biz-orange\/DN\/newMarketService\/getNewMarket data-type=text data="" status-code=200 header="Content-Type:application/json"
 
-# ══════════════════════════════════════════════════════════
-# 重庆移动 H5 营销页（只拦 /mapp/activities/，勿整域拦）
 ^https?:\/\/wap\.cq\.10086\.cn\/mapp\/activities\/ data-type=text data="" status-code=200 header="Content-Type:text/html"
 
-# 端侧推荐引擎（未长期实测，首页异常先注释这段）
 ^https?:\/\/h\.app\.coc\.10086\.cn\/ngpsie\/psieappaiddsdkserver\/ data-type=text data="{\"code\":\"000000\",\"msg\":\"操作成功\",\"info\":null,\"data\":null}" status-code=200 header="Content-Type:application/json"
 
-# 埋点上报（纯上行）
-# 极光埋点
 ^https?:\/\/jiguang\.coc\.10086\.cn\/v3\/projects\/[^\/]+\/collect data-type=text data="{\"result\":\"0\",\"msg\":\"ok\"}" status-code=200 header="Content-Type:application/json"
-# APM 性能与异常上报
 ^https?:\/\/apm\.app\.coc\.10086\.cn\/ data-type=text data="" status-code=200 header="Content-Type:application/json"
-# 加密行为上报
 ^https?:\/\/client\.app\.coc\.10086\.cn\/cache_server\/api\/cache\/encrypt\/reportV2 data-type=text data="" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/h\.app\.coc\.10086\.cn\/ngpsie\/psieipuudp\/gather\/newSendLogForAES data-type=text data="" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/h\.app\.coc\.10086\.cn\/ngpsie\/psieappaidcsdkserver\/dataReported\/ data-type=text data="" status-code=200 header="Content-Type:application/json"
-# 用户画像上报（cmos/profile，out 远大于 in）
 ^https?:\/\/mtm\.online-cmcc\.cn\/cmos\/profile data-type=text data="" status-code=200 header="Content-Type:application/json"
-# 重庆端埋点与 Webtrends
 ^https?:\/\/wap\.cq\.10086\.cn\/collector\/terminal\.api data-type=text data="" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/service\.cq\.10086\.cn\/nwebtrends\/ data-type=base64 data="R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" status-code=200 header="Content-Type:image/gif"
-# 可选，默认不拦：GrowingIO/pagecode SDK 本体（返空 JS 有中断页面风险）
-# ^https?:\/\/wap\.cq\.10086\.cn\/(?:agent\/pagecode|mapp\/component\/js\/gdp-full|h5\/component\/eccommon\/(?:gdp-full|pagecode-agent)|mapp\/pagemobile\/mobilejs\/common\/cq_sdc_load) data-type=text data="" status-code=200 header="Content-Type:application/javascript"
 
-# 第三方 SDK：MobTech
 ^https?:\/\/(?:upc|cfgc)\.zztfly\.com\/ data-type=text data="{}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/da\.mmarket\.com\/udata_v5\/ data-type=text data="" status-code=200 header="Content-Type:application/json"
 
-# 联通 m.client.10010.com（未抓包验证）
-# 开屏：只把 startup_adv 置空，保留 respCode 与 imgIndex
 ^https?:\/\/m\.client\.10010\.com\/mobileService\/customer\/accountListData\.htm data-type=text data="{\"imgIndex\":\"0\",\"adv\":{\"startup_adv\":{\"advCntList\":[],\"buttonList\":[]}},\"respCode\":\"0000\"}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/m\.client\.10010\.com\/mobileService\/(?:activity|customer)\/(?:get_client_adv|get_startadv) data-type=text data="{\"respCode\":\"0000\"}" status-code=200 header="Content-Type:application/json"
 ^https?:\/\/m\.client\.10010\.com\/uniAdmsInterface\/(?:getHomePageAd|getWelcomeAd) data-type=text data="{\"respCode\":\"0000\"}" status-code=200 header="Content-Type:application/json"
