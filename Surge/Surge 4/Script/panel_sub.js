@@ -1,6 +1,6 @@
 (async () => {
   const args = Object.fromEntries(
-    (($argument || '')).split('&').map(s => s.split('=')).map(([k, v]) => [k, decodeURIComponent(v || '')])
+    (typeof $argument === 'undefined' || $argument === null ? '' : String($argument)).split('&').map(s => s.split('=')).map(([k, v]) => [k, decodeURIComponent(v || '')])
   )
 
   const url = args.url
