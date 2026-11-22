@@ -47,10 +47,8 @@ function tryRender() {
 
   const content = [
     `⬇ ${dlLine}`,
-    ``,
     `⚡ 中位 ${med !== null ? med + 'ms' : '—'} · 波动 ${jit !== null ? '±' + jit + 'ms' : '—'}`,
     `   ${min !== null ? min + '–' + max + 'ms' : '—'} · ${rtts.length} 次采样`,
-    ``,
     `🌐 Cloudflare ×${STREAMS} · ${(BYTES / 1048576).toFixed(0)}MB/流${dlNote}`,
     `↻ ${upd}`,
   ].join('\n')

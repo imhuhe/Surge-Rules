@@ -119,10 +119,8 @@ function netLabel() {
     const lines = [
       `🟢 ${nodeName} · ${groupName}`,
       `🌏 ${geo} · ${asNum} · ${kind}`,
-      ``,
-      `📶 ${lat} · 同 IP ${dur(Date.now() - (st.since || Date.now()))}`,
       `🖥 ${info.query}${chgNote}`,
-      ``,
+      `📶 ${lat} · 同 IP ${dur(Date.now() - (st.since || Date.now()))}`,
       `🕐 ${utc} ${hhmm}${diff ? ' · ' + diff : ''}${net ? ' · ' + net : ''}`,
     ]
 
