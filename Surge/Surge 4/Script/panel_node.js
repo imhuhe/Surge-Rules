@@ -31,7 +31,7 @@ function dur(ms) {
   if (d > 0) return `${d} 天`
   if (h > 0) return `${h} 小时`
   if (m > 0) return `${m} 分钟`
-  return '刚变'
+  return '不到 1 分钟'
 }
 
 function tzOffHours(tz) {
